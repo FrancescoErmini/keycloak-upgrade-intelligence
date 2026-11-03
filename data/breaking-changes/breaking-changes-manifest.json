@@ -1,0 +1,163 @@
+{
+  "schema_version": "1.0",
+  "source": {
+    "doc_id": "keycloak-26-upgrading",
+    "file": "keycloak-26-upgrading.html",
+    "url": "https://www.keycloak.org/docs/latest/upgrading/index.html",
+    "notice": "Rules are curated for the POC. Each rule cites the passage it derives from; 'verified_against_official_docs' must be set to true only after a human review against the official guide."
+  },
+  "rules": [
+    {
+      "bc_id": "KC-BC-001",
+      "title": "Wildcard in the host name of valid redirect URIs",
+      "kind": "breaking-change",
+      "category": "redirect-uri-validation",
+      "category_label": "Redirect URI validation",
+      "introduced_in": "26.6.3",
+      "severity": "high",
+      "section_anchor": "redirect-uri-wildcard-hostname",
+      "source_quote": "Wildcards in valid redirect URIs are no longer allowed to extend the host name.",
+      "evidence_terms": ["redirect URI", "wildcard", "host name", "path"],
+      "detection": {
+        "static": {
+          "target": "client",
+          "condition": {
+            "field": "redirect_uris",
+            "op": "any_regex",
+            "value": "^[A-Za-z][A-Za-z0-9+.-]*://[^/?#]*\\*"
+          }
+        },
+        "runtime": {
+          "mode": "corroborate",
+          "condition": {
+            "any": [
+              {"field": "url.path", "op": "regex", "value": "/protocol/openid-connect/auth$"},
+              {"field": "event.action", "op": "in", "value": ["LOGIN", "CODE_TO_TOKEN"]}
+            ]
+          }
+        }
+      },
+      "remediation": "Replace every valid redirect URI that has a wildcard before the first path separator (e.g. https://example.com*) with an explicit host followed by a path wildcard (e.g. https://example.com/*), and register additional hosts explicitly.",
+      "testability": {"observable_from_source_below": "26.6.3", "live_test": "redirect-wildcard"},
+      "status": "approved",
+      "review": {"approved_by": "poc-curator", "verified_against_official_docs": false}
+    },
+    {
+      "bc_id": "KC-BC-002",
+      "title": "Legacy redirect_uri parameter on the logout endpoint",
+      "kind": "breaking-change",
+      "category": "deprecated-http-endpoints",
+      "category_label": "Deprecated HTTP endpoints",
+      "introduced_in": "26.0.0",
+      "severity": "critical",
+      "section_anchor": "legacy-logout-redirect-uri-removed",
+      "source_quote": "The legacy-logout-redirect-uri option, which allowed the redirect_uri parameter on the OpenID Connect logout endpoint, has been removed.",
+      "evidence_terms": ["logout", "redirect_uri", "post_logout_redirect_uri", "id_token_hint"],
+      "detection": {
+        "runtime": {
+          "mode": "detect",
+          "attribution": {"infer_from_params": ["redirect_uri"]},
+          "condition": {
+            "all": [
+              {"field": "url.path", "op": "regex", "value": "/protocol/openid-connect/logout/?$"},
+              {"field": "url.query", "op": "has_param", "value": "redirect_uri"}
+            ]
+          }
+        }
+      },
+      "remediation": "Switch the RP-initiated logout to post_logout_redirect_uri combined with id_token_hint (or client_id), and register the URI in the client's 'Valid post logout redirect URIs'.",
+      "testability": {"observable_from_source_below": "26.0.0", "live_test": "legacy-logout"},
+      "status": "approved",
+      "review": {"approved_by": "poc-curator", "verified_against_official_docs": false}
+    },
+    {
+      "bc_id": "KC-BC-003",
+      "title": "Non-normalized HTTP request paths rejected",
+      "kind": "breaking-change",
+      "category": "deprecated-http-endpoints",
+      "category_label": "Deprecated HTTP endpoints",
+      "introduced_in": "26.4.3",
+      "severity": "high",
+      "section_anchor": "non-normalized-request-paths",
+      "source_quote": "Keycloak now rejects HTTP requests whose path is not normalized, for example paths that contain double slashes (//) or dot segments such as /./ or /../.",
+      "evidence_terms": ["normalized", "double slashes", "dot segments", "400"],
+      "detection": {
+        "runtime": {
+          "mode": "detect",
+          "condition": {"field": "url.path", "op": "regex", "value": "//|/\\.\\.?(/|$)"}
+        }
+      },
+      "remediation": "Normalize the request URL in the client library or reverse proxy (collapse duplicate slashes, resolve dot segments) before forwarding it to Keycloak.",
+      "testability": {"observable_from_source_below": "26.4.3", "live_test": "non-normalized-path"},
+      "status": "approved",
+      "review": {"approved_by": "poc-curator", "verified_against_official_docs": false}
+    },
+    {
+      "bc_id": "KC-BC-004",
+      "title": "Single-valued role protocol mappers",
+      "kind": "breaking-change",
+      "category": "protocol-token-mapping",
+      "category_label": "Protocol / token mapping",
+      "introduced_in": "26.0.0",
+      "severity": "high",
+      "section_anchor": "role-mappers-multivalued",
+      "source_quote": "The User Realm Role and User Client Role protocol mappers always produce multivalued claims.",
+      "evidence_terms": ["User Realm Role", "User Client Role", "Multivalued", "JSON array"],
+      "detection": {
+        "static": {
+          "target": "client",
+          "condition": {
+            "field": "protocol_mappers",
+            "op": "any_item",
+            "where": {
+              "all": [
+                {"field": "type", "op": "in", "value": ["oidc-usermodel-realm-role-mapper", "oidc-usermodel-client-role-mapper"]},
+                {"field": "multivalued", "op": "eq", "value": false}
+              ]
+            }
+          }
+        },
+        "runtime": {
+          "mode": "corroborate",
+          "condition": {
+            "any": [
+              {"field": "url.path", "op": "regex", "value": "/protocol/openid-connect/token$"},
+              {"field": "event.action", "op": "in", "value": ["CLIENT_LOGIN", "CODE_TO_TOKEN", "REFRESH_TOKEN"]}
+            ]
+          }
+        }
+      },
+      "remediation": "Set 'Multivalued' to ON for the role mappers and update the consuming applications to read the role claim as a JSON array.",
+      "testability": {"observable_from_source_below": "26.0.0", "live_test": "role-mapper-multivalued"},
+      "status": "approved",
+      "review": {"approved_by": "poc-curator", "verified_against_official_docs": false}
+    },
+    {
+      "bc_id": "KC-BC-005",
+      "title": "Calls on monitored endpoints not attributable to a client",
+      "kind": "control",
+      "category": "unattributed-calls",
+      "category_label": "Unattributed calls (control)",
+      "introduced_in": null,
+      "severity": "info",
+      "section_anchor": null,
+      "source_quote": null,
+      "evidence_terms": [],
+      "detection": {
+        "runtime": {
+          "mode": "aggregate",
+          "condition": {
+            "all": [
+              {"field": "client_identified", "op": "eq", "value": false},
+              {"field": "url.path", "op": "regex", "value": "^/realms/"}
+            ]
+          }
+        }
+      },
+      "remediation": "Enable MDC (log-mdc-enabled with the clientId key) and make clients send client_id explicitly, so that runtime evidence can be attributed to a Keycloak client.",
+      "testability": {"live_test": "anonymous-client"},
+      "status": "approved",
+      "review": {"approved_by": "poc-curator", "verified_against_official_docs": true}
+    }
+  ]
+}

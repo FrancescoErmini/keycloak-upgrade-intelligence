@@ -1,0 +1,907 @@
+{
+  "realm": "demo",
+  "generated_by": "scripts/generate_dataset.py",
+  "notice": "All applications, teams and contacts are fictitious.",
+  "clients": [
+    {
+      "client_id": "hr-portal",
+      "application": "Hr Portal",
+      "owner_team": "Team Atlas",
+      "business_criticality": "critical",
+      "environment": "production",
+      "technical_contact": "team-atlas@example.com",
+      "tech_stack": "Java / Spring Boot"
+    },
+    {
+      "client_id": "crm-web",
+      "application": "Crm Web",
+      "owner_team": "Team Borealis",
+      "business_criticality": "critical",
+      "environment": "production",
+      "technical_contact": "team-borealis@example.com",
+      "tech_stack": "Java / Spring Boot"
+    },
+    {
+      "client_id": "intranet",
+      "application": "Intranet",
+      "owner_team": "Team Cobalt",
+      "business_criticality": "medium",
+      "environment": "production",
+      "technical_contact": "team-cobalt@example.com",
+      "tech_stack": "Java / Spring Boot"
+    },
+    {
+      "client_id": "expense-web",
+      "application": "Expense Web",
+      "owner_team": "Team Delta",
+      "business_criticality": "high",
+      "environment": "production",
+      "technical_contact": "team-delta@example.com",
+      "tech_stack": "Java / Spring Boot"
+    },
+    {
+      "client_id": "procurement-web",
+      "application": "Procurement Web",
+      "owner_team": "Team Ember",
+      "business_criticality": "high",
+      "environment": "production",
+      "technical_contact": "team-ember@example.com",
+      "tech_stack": "Java / Spring Boot"
+    },
+    {
+      "client_id": "wiki-web",
+      "application": "Wiki Web",
+      "owner_team": "Team Fjord",
+      "business_criticality": "high",
+      "environment": "production",
+      "technical_contact": "team-fjord@example.com",
+      "tech_stack": "Java / Spring Boot"
+    },
+    {
+      "client_id": "old-claims-web",
+      "application": "Old Claims Web",
+      "owner_team": "Team Granite",
+      "business_criticality": "critical",
+      "environment": "production",
+      "technical_contact": "team-granite@example.com",
+      "tech_stack": "Java / Spring Boot"
+    },
+    {
+      "client_id": "travel-web",
+      "application": "Travel Web",
+      "owner_team": "Team Atlas",
+      "business_criticality": "low",
+      "environment": "production",
+      "technical_contact": "team-atlas@example.com",
+      "tech_stack": "Java / Spring Boot"
+    },
+    {
+      "client_id": "payroll-web",
+      "application": "Payroll Web",
+      "owner_team": "Team Borealis",
+      "business_criticality": "critical",
+      "environment": "production",
+      "technical_contact": "team-borealis@example.com",
+      "tech_stack": "Java / Spring Boot"
+    },
+    {
+      "client_id": "helpdesk-web",
+      "application": "Helpdesk Web",
+      "owner_team": "Team Cobalt",
+      "business_criticality": "low",
+      "environment": "production",
+      "technical_contact": "team-cobalt@example.com",
+      "tech_stack": "Java / Spring Boot"
+    },
+    {
+      "client_id": "billing-web",
+      "application": "Billing Web",
+      "owner_team": "Team Delta",
+      "business_criticality": "medium",
+      "environment": "production",
+      "technical_contact": "team-delta@example.com",
+      "tech_stack": "Java / Spring Boot"
+    },
+    {
+      "client_id": "analytics-web",
+      "application": "Analytics Web",
+      "owner_team": "Team Ember",
+      "business_criticality": "critical",
+      "environment": "production",
+      "technical_contact": "team-ember@example.com",
+      "tech_stack": "Java / Spring Boot"
+    },
+    {
+      "client_id": "timesheet-web",
+      "application": "Timesheet Web",
+      "owner_team": "Team Fjord",
+      "business_criticality": "critical",
+      "environment": "production",
+      "technical_contact": "team-fjord@example.com",
+      "tech_stack": "Java / Spring Boot"
+    },
+    {
+      "client_id": "learning-web",
+      "application": "Learning Web",
+      "owner_team": "Team Granite",
+      "business_criticality": "critical",
+      "environment": "production",
+      "technical_contact": "team-granite@example.com",
+      "tech_stack": "Java / Spring Boot"
+    },
+    {
+      "client_id": "recruiting-web",
+      "application": "Recruiting Web",
+      "owner_team": "Team Atlas",
+      "business_criticality": "high",
+      "environment": "production",
+      "technical_contact": "team-atlas@example.com",
+      "tech_stack": "Java / Spring Boot"
+    },
+    {
+      "client_id": "assets-web",
+      "application": "Assets Web",
+      "owner_team": "Team Borealis",
+      "business_criticality": "high",
+      "environment": "production",
+      "technical_contact": "team-borealis@example.com",
+      "tech_stack": "Java / Spring Boot"
+    },
+    {
+      "client_id": "contracts-web",
+      "application": "Contracts Web",
+      "owner_team": "Team Cobalt",
+      "business_criticality": "low",
+      "environment": "production",
+      "technical_contact": "team-cobalt@example.com",
+      "tech_stack": "Java / Spring Boot"
+    },
+    {
+      "client_id": "legal-web",
+      "application": "Legal Web",
+      "owner_team": "Team Delta",
+      "business_criticality": "low",
+      "environment": "production",
+      "technical_contact": "team-delta@example.com",
+      "tech_stack": "Java / Spring Boot"
+    },
+    {
+      "client_id": "facilities-web",
+      "application": "Facilities Web",
+      "owner_team": "Team Ember",
+      "business_criticality": "critical",
+      "environment": "production",
+      "technical_contact": "team-ember@example.com",
+      "tech_stack": "Java / Spring Boot"
+    },
+    {
+      "client_id": "benefits-web",
+      "application": "Benefits Web",
+      "owner_team": "Team Fjord",
+      "business_criticality": "low",
+      "environment": "production",
+      "technical_contact": "team-fjord@example.com",
+      "tech_stack": "Java / Spring Boot"
+    },
+    {
+      "client_id": "marketing-web",
+      "application": "Marketing Web",
+      "owner_team": "Team Granite",
+      "business_criticality": "high",
+      "environment": "production",
+      "technical_contact": "team-granite@example.com",
+      "tech_stack": "Java / Spring Boot"
+    },
+    {
+      "client_id": "partner-web",
+      "application": "Partner Web",
+      "owner_team": "Team Atlas",
+      "business_criticality": "low",
+      "environment": "production",
+      "technical_contact": "team-atlas@example.com",
+      "tech_stack": "Java / Spring Boot"
+    },
+    {
+      "client_id": "supplier-web",
+      "application": "Supplier Web",
+      "owner_team": "Team Borealis",
+      "business_criticality": "medium",
+      "environment": "production",
+      "technical_contact": "team-borealis@example.com",
+      "tech_stack": "Java / Spring Boot"
+    },
+    {
+      "client_id": "quality-web",
+      "application": "Quality Web",
+      "owner_team": "Team Cobalt",
+      "business_criticality": "high",
+      "environment": "production",
+      "technical_contact": "team-cobalt@example.com",
+      "tech_stack": "Java / Spring Boot"
+    },
+    {
+      "client_id": "projects-web",
+      "application": "Projects Web",
+      "owner_team": "Team Delta",
+      "business_criticality": "medium",
+      "environment": "production",
+      "technical_contact": "team-delta@example.com",
+      "tech_stack": "Java / Spring Boot"
+    },
+    {
+      "client_id": "compliance-web",
+      "application": "Compliance Web",
+      "owner_team": "Team Ember",
+      "business_criticality": "low",
+      "environment": "production",
+      "technical_contact": "team-ember@example.com",
+      "tech_stack": "Java / Spring Boot"
+    },
+    {
+      "client_id": "audit-web",
+      "application": "Audit Web",
+      "owner_team": "Team Fjord",
+      "business_criticality": "medium",
+      "environment": "production",
+      "technical_contact": "team-fjord@example.com",
+      "tech_stack": "Java / Spring Boot"
+    },
+    {
+      "client_id": "treasury-web",
+      "application": "Treasury Web",
+      "owner_team": "Team Granite",
+      "business_criticality": "critical",
+      "environment": "production",
+      "technical_contact": "team-granite@example.com",
+      "tech_stack": "Java / Spring Boot"
+    },
+    {
+      "client_id": "risk-web",
+      "application": "Risk Web",
+      "owner_team": "Team Atlas",
+      "business_criticality": "high",
+      "environment": "production",
+      "technical_contact": "team-atlas@example.com",
+      "tech_stack": "Java / Spring Boot"
+    },
+    {
+      "client_id": "sales-web",
+      "application": "Sales Web",
+      "owner_team": "Team Borealis",
+      "business_criticality": "medium",
+      "environment": "production",
+      "technical_contact": "team-borealis@example.com",
+      "tech_stack": "Java / Spring Boot"
+    },
+    {
+      "client_id": "support-web",
+      "application": "Support Web",
+      "owner_team": "Team Cobalt",
+      "business_criticality": "medium",
+      "environment": "production",
+      "technical_contact": "team-cobalt@example.com",
+      "tech_stack": "Java / Spring Boot"
+    },
+    {
+      "client_id": "events-web",
+      "application": "Events Web",
+      "owner_team": "Team Delta",
+      "business_criticality": "medium",
+      "environment": "production",
+      "technical_contact": "team-delta@example.com",
+      "tech_stack": "Java / Spring Boot"
+    },
+    {
+      "client_id": "fleet-web",
+      "application": "Fleet Web",
+      "owner_team": "Team Ember",
+      "business_criticality": "high",
+      "environment": "production",
+      "technical_contact": "team-ember@example.com",
+      "tech_stack": "Java / Spring Boot"
+    },
+    {
+      "client_id": "safety-web",
+      "application": "Safety Web",
+      "owner_team": "Team Fjord",
+      "business_criticality": "high",
+      "environment": "production",
+      "technical_contact": "team-fjord@example.com",
+      "tech_stack": "Java / Spring Boot"
+    },
+    {
+      "client_id": "docs-web",
+      "application": "Docs Web",
+      "owner_team": "Team Granite",
+      "business_criticality": "medium",
+      "environment": "production",
+      "technical_contact": "team-granite@example.com",
+      "tech_stack": "Java / Spring Boot"
+    },
+    {
+      "client_id": "svc-reporting",
+      "application": "Svc Reporting",
+      "owner_team": "Team Atlas",
+      "business_criticality": "critical",
+      "environment": "production",
+      "technical_contact": "team-atlas@example.com",
+      "tech_stack": "Go / batch service"
+    },
+    {
+      "client_id": "svc-ledger-sync",
+      "application": "Svc Ledger Sync",
+      "owner_team": "Team Borealis",
+      "business_criticality": "critical",
+      "environment": "production",
+      "technical_contact": "team-borealis@example.com",
+      "tech_stack": "Go / batch service"
+    },
+    {
+      "client_id": "svc-inventory-sync",
+      "application": "Svc Inventory Sync",
+      "owner_team": "Team Cobalt",
+      "business_criticality": "medium",
+      "environment": "production",
+      "technical_contact": "team-cobalt@example.com",
+      "tech_stack": "Go / batch service"
+    },
+    {
+      "client_id": "svc-billing-batch",
+      "application": "Svc Billing Batch",
+      "owner_team": "Team Delta",
+      "business_criticality": "critical",
+      "environment": "production",
+      "technical_contact": "team-delta@example.com",
+      "tech_stack": "Go / batch service"
+    },
+    {
+      "client_id": "svc-notifications",
+      "application": "Svc Notifications",
+      "owner_team": "Team Ember",
+      "business_criticality": "medium",
+      "environment": "production",
+      "technical_contact": "team-ember@example.com",
+      "tech_stack": "Go / batch service"
+    },
+    {
+      "client_id": "svc-search-indexer",
+      "application": "Svc Search Indexer",
+      "owner_team": "Team Fjord",
+      "business_criticality": "medium",
+      "environment": "production",
+      "technical_contact": "team-fjord@example.com",
+      "tech_stack": "Go / batch service"
+    },
+    {
+      "client_id": "svc-payments",
+      "application": "Svc Payments",
+      "owner_team": "Team Granite",
+      "business_criticality": "low",
+      "environment": "production",
+      "technical_contact": "team-granite@example.com",
+      "tech_stack": "Go / batch service"
+    },
+    {
+      "client_id": "svc-orders",
+      "application": "Svc Orders",
+      "owner_team": "Team Atlas",
+      "business_criticality": "medium",
+      "environment": "production",
+      "technical_contact": "team-atlas@example.com",
+      "tech_stack": "Go / batch service"
+    },
+    {
+      "client_id": "svc-shipping",
+      "application": "Svc Shipping",
+      "owner_team": "Team Borealis",
+      "business_criticality": "critical",
+      "environment": "production",
+      "technical_contact": "team-borealis@example.com",
+      "tech_stack": "Go / batch service"
+    },
+    {
+      "client_id": "svc-pricing",
+      "application": "Svc Pricing",
+      "owner_team": "Team Cobalt",
+      "business_criticality": "medium",
+      "environment": "production",
+      "technical_contact": "team-cobalt@example.com",
+      "tech_stack": "Go / batch service"
+    },
+    {
+      "client_id": "svc-catalog",
+      "application": "Svc Catalog",
+      "owner_team": "Team Delta",
+      "business_criticality": "low",
+      "environment": "production",
+      "technical_contact": "team-delta@example.com",
+      "tech_stack": "Go / batch service"
+    },
+    {
+      "client_id": "svc-identity-sync",
+      "application": "Svc Identity Sync",
+      "owner_team": "Team Ember",
+      "business_criticality": "critical",
+      "environment": "production",
+      "technical_contact": "team-ember@example.com",
+      "tech_stack": "Go / batch service"
+    },
+    {
+      "client_id": "svc-audit-export",
+      "application": "Svc Audit Export",
+      "owner_team": "Team Fjord",
+      "business_criticality": "medium",
+      "environment": "production",
+      "technical_contact": "team-fjord@example.com",
+      "tech_stack": "Go / batch service"
+    },
+    {
+      "client_id": "svc-crm-sync",
+      "application": "Svc Crm Sync",
+      "owner_team": "Team Granite",
+      "business_criticality": "critical",
+      "environment": "production",
+      "technical_contact": "team-granite@example.com",
+      "tech_stack": "Go / batch service"
+    },
+    {
+      "client_id": "svc-hr-sync",
+      "application": "Svc Hr Sync",
+      "owner_team": "Team Atlas",
+      "business_criticality": "low",
+      "environment": "production",
+      "technical_contact": "team-atlas@example.com",
+      "tech_stack": "Go / batch service"
+    },
+    {
+      "client_id": "svc-mailer",
+      "application": "Svc Mailer",
+      "owner_team": "Team Borealis",
+      "business_criticality": "medium",
+      "environment": "production",
+      "technical_contact": "team-borealis@example.com",
+      "tech_stack": "Go / batch service"
+    },
+    {
+      "client_id": "svc-scheduler",
+      "application": "Svc Scheduler",
+      "owner_team": "Team Cobalt",
+      "business_criticality": "low",
+      "environment": "production",
+      "technical_contact": "team-cobalt@example.com",
+      "tech_stack": "Go / batch service"
+    },
+    {
+      "client_id": "svc-archiver",
+      "application": "Svc Archiver",
+      "owner_team": "Team Delta",
+      "business_criticality": "medium",
+      "environment": "production",
+      "technical_contact": "team-delta@example.com",
+      "tech_stack": "Go / batch service"
+    },
+    {
+      "client_id": "svc-metrics",
+      "application": "Svc Metrics",
+      "owner_team": "Team Ember",
+      "business_criticality": "low",
+      "environment": "production",
+      "technical_contact": "team-ember@example.com",
+      "tech_stack": "Go / batch service"
+    },
+    {
+      "client_id": "svc-fraud",
+      "application": "Svc Fraud",
+      "owner_team": "Team Fjord",
+      "business_criticality": "high",
+      "environment": "production",
+      "technical_contact": "team-fjord@example.com",
+      "tech_stack": "Go / batch service"
+    },
+    {
+      "client_id": "svc-loyalty",
+      "application": "Svc Loyalty",
+      "owner_team": "Team Granite",
+      "business_criticality": "critical",
+      "environment": "production",
+      "technical_contact": "team-granite@example.com",
+      "tech_stack": "Go / batch service"
+    },
+    {
+      "client_id": "svc-tax",
+      "application": "Svc Tax",
+      "owner_team": "Team Atlas",
+      "business_criticality": "critical",
+      "environment": "production",
+      "technical_contact": "team-atlas@example.com",
+      "tech_stack": "Go / batch service"
+    },
+    {
+      "client_id": "svc-gateway",
+      "application": "Svc Gateway",
+      "owner_team": "Team Borealis",
+      "business_criticality": "high",
+      "environment": "production",
+      "technical_contact": "team-borealis@example.com",
+      "tech_stack": "Go / batch service"
+    },
+    {
+      "client_id": "svc-etl",
+      "application": "Svc Etl",
+      "owner_team": "Team Cobalt",
+      "business_criticality": "medium",
+      "environment": "production",
+      "technical_contact": "team-cobalt@example.com",
+      "tech_stack": "Go / batch service"
+    },
+    {
+      "client_id": "svc-backup",
+      "application": "Svc Backup",
+      "owner_team": "Team Delta",
+      "business_criticality": "critical",
+      "environment": "production",
+      "technical_contact": "team-delta@example.com",
+      "tech_stack": "Go / batch service"
+    },
+    {
+      "client_id": "spa-catalog",
+      "application": "Spa Catalog",
+      "owner_team": "Team Ember",
+      "business_criticality": "high",
+      "environment": "production",
+      "technical_contact": "team-ember@example.com",
+      "tech_stack": "TypeScript / React"
+    },
+    {
+      "client_id": "spa-checkout",
+      "application": "Spa Checkout",
+      "owner_team": "Team Fjord",
+      "business_criticality": "critical",
+      "environment": "production",
+      "technical_contact": "team-fjord@example.com",
+      "tech_stack": "TypeScript / React"
+    },
+    {
+      "client_id": "spa-dashboard",
+      "application": "Spa Dashboard",
+      "owner_team": "Team Granite",
+      "business_criticality": "medium",
+      "environment": "production",
+      "technical_contact": "team-granite@example.com",
+      "tech_stack": "TypeScript / React"
+    },
+    {
+      "client_id": "spa-mobile-web",
+      "application": "Spa Mobile Web",
+      "owner_team": "Team Atlas",
+      "business_criticality": "medium",
+      "environment": "production",
+      "technical_contact": "team-atlas@example.com",
+      "tech_stack": "TypeScript / React"
+    },
+    {
+      "client_id": "spa-store-locator",
+      "application": "Spa Store Locator",
+      "owner_team": "Team Borealis",
+      "business_criticality": "medium",
+      "environment": "production",
+      "technical_contact": "team-borealis@example.com",
+      "tech_stack": "TypeScript / React"
+    },
+    {
+      "client_id": "spa-chat",
+      "application": "Spa Chat",
+      "owner_team": "Team Cobalt",
+      "business_criticality": "medium",
+      "environment": "production",
+      "technical_contact": "team-cobalt@example.com",
+      "tech_stack": "TypeScript / React"
+    },
+    {
+      "client_id": "spa-kiosk",
+      "application": "Spa Kiosk",
+      "owner_team": "Team Delta",
+      "business_criticality": "high",
+      "environment": "production",
+      "technical_contact": "team-delta@example.com",
+      "tech_stack": "TypeScript / React"
+    },
+    {
+      "client_id": "spa-survey",
+      "application": "Spa Survey",
+      "owner_team": "Team Ember",
+      "business_criticality": "medium",
+      "environment": "production",
+      "technical_contact": "team-ember@example.com",
+      "tech_stack": "TypeScript / React"
+    },
+    {
+      "client_id": "spa-booking",
+      "application": "Spa Booking",
+      "owner_team": "Team Fjord",
+      "business_criticality": "medium",
+      "environment": "production",
+      "technical_contact": "team-fjord@example.com",
+      "tech_stack": "TypeScript / React"
+    },
+    {
+      "client_id": "spa-wallet",
+      "application": "Spa Wallet",
+      "owner_team": "Team Granite",
+      "business_criticality": "high",
+      "environment": "production",
+      "technical_contact": "team-granite@example.com",
+      "tech_stack": "TypeScript / React"
+    },
+    {
+      "client_id": "spa-feedback",
+      "application": "Spa Feedback",
+      "owner_team": "Team Atlas",
+      "business_criticality": "medium",
+      "environment": "production",
+      "technical_contact": "team-atlas@example.com",
+      "tech_stack": "TypeScript / React"
+    },
+    {
+      "client_id": "spa-careers",
+      "application": "Spa Careers",
+      "owner_team": "Team Borealis",
+      "business_criticality": "critical",
+      "environment": "production",
+      "technical_contact": "team-borealis@example.com",
+      "tech_stack": "TypeScript / React"
+    },
+    {
+      "client_id": "spa-status",
+      "application": "Spa Status",
+      "owner_team": "Team Cobalt",
+      "business_criticality": "low",
+      "environment": "production",
+      "technical_contact": "team-cobalt@example.com",
+      "tech_stack": "TypeScript / React"
+    },
+    {
+      "client_id": "spa-forum",
+      "application": "Spa Forum",
+      "owner_team": "Team Delta",
+      "business_criticality": "high",
+      "environment": "production",
+      "technical_contact": "team-delta@example.com",
+      "tech_stack": "TypeScript / React"
+    },
+    {
+      "client_id": "spa-maps",
+      "application": "Spa Maps",
+      "owner_team": "Team Ember",
+      "business_criticality": "low",
+      "environment": "production",
+      "technical_contact": "team-ember@example.com",
+      "tech_stack": "TypeScript / React"
+    },
+    {
+      "client_id": "saml-payroll",
+      "application": "Saml Payroll",
+      "owner_team": "Team Fjord",
+      "business_criticality": "high",
+      "environment": "production",
+      "technical_contact": "team-fjord@example.com",
+      "tech_stack": "COTS SAML SP"
+    },
+    {
+      "client_id": "saml-erp",
+      "application": "Saml Erp",
+      "owner_team": "Team Granite",
+      "business_criticality": "high",
+      "environment": "production",
+      "technical_contact": "team-granite@example.com",
+      "tech_stack": "COTS SAML SP"
+    },
+    {
+      "client_id": "saml-expenses",
+      "application": "Saml Expenses",
+      "owner_team": "Team Atlas",
+      "business_criticality": "medium",
+      "environment": "production",
+      "technical_contact": "team-atlas@example.com",
+      "tech_stack": "COTS SAML SP"
+    },
+    {
+      "client_id": "saml-lms",
+      "application": "Saml Lms",
+      "owner_team": "Team Borealis",
+      "business_criticality": "medium",
+      "environment": "production",
+      "technical_contact": "team-borealis@example.com",
+      "tech_stack": "COTS SAML SP"
+    },
+    {
+      "client_id": "saml-wiki",
+      "application": "Saml Wiki",
+      "owner_team": "Team Cobalt",
+      "business_criticality": "medium",
+      "environment": "production",
+      "technical_contact": "team-cobalt@example.com",
+      "tech_stack": "COTS SAML SP"
+    },
+    {
+      "client_id": "saml-vpn-portal",
+      "application": "Saml Vpn Portal",
+      "owner_team": "Team Delta",
+      "business_criticality": "low",
+      "environment": "production",
+      "technical_contact": "team-delta@example.com",
+      "tech_stack": "COTS SAML SP"
+    },
+    {
+      "client_id": "saml-ticketing",
+      "application": "Saml Ticketing",
+      "owner_team": "Team Ember",
+      "business_criticality": "high",
+      "environment": "production",
+      "technical_contact": "team-ember@example.com",
+      "tech_stack": "COTS SAML SP"
+    },
+    {
+      "client_id": "saml-crm",
+      "application": "Saml Crm",
+      "owner_team": "Team Fjord",
+      "business_criticality": "medium",
+      "environment": "production",
+      "technical_contact": "team-fjord@example.com",
+      "tech_stack": "COTS SAML SP"
+    },
+    {
+      "client_id": "saml-docs",
+      "application": "Saml Docs",
+      "owner_team": "Team Granite",
+      "business_criticality": "critical",
+      "environment": "production",
+      "technical_contact": "team-granite@example.com",
+      "tech_stack": "COTS SAML SP"
+    },
+    {
+      "client_id": "saml-intranet",
+      "application": "Saml Intranet",
+      "owner_team": "Team Atlas",
+      "business_criticality": "high",
+      "environment": "production",
+      "technical_contact": "team-atlas@example.com",
+      "tech_stack": "COTS SAML SP"
+    },
+    {
+      "client_id": "saml-benefits",
+      "application": "Saml Benefits",
+      "owner_team": "Team Borealis",
+      "business_criticality": "critical",
+      "environment": "production",
+      "technical_contact": "team-borealis@example.com",
+      "tech_stack": "COTS SAML SP"
+    },
+    {
+      "client_id": "saml-procurement",
+      "application": "Saml Procurement",
+      "owner_team": "Team Cobalt",
+      "business_criticality": "medium",
+      "environment": "production",
+      "technical_contact": "team-cobalt@example.com",
+      "tech_stack": "COTS SAML SP"
+    },
+    {
+      "client_id": "saml-signing",
+      "application": "Saml Signing",
+      "owner_team": "Team Delta",
+      "business_criticality": "medium",
+      "environment": "production",
+      "technical_contact": "team-delta@example.com",
+      "tech_stack": "COTS SAML SP"
+    },
+    {
+      "client_id": "saml-travel",
+      "application": "Saml Travel",
+      "owner_team": "Team Ember",
+      "business_criticality": "medium",
+      "environment": "production",
+      "technical_contact": "team-ember@example.com",
+      "tech_stack": "COTS SAML SP"
+    },
+    {
+      "client_id": "saml-archive",
+      "application": "Saml Archive",
+      "owner_team": "Team Fjord",
+      "business_criticality": "critical",
+      "environment": "production",
+      "technical_contact": "team-fjord@example.com",
+      "tech_stack": "COTS SAML SP"
+    },
+    {
+      "client_id": "legacy-portal",
+      "application": "Legacy Portal",
+      "owner_team": "Team Granite",
+      "business_criticality": "critical",
+      "environment": "production",
+      "technical_contact": "team-granite@example.com",
+      "tech_stack": "Legacy (JSP / .NET Framework)"
+    },
+    {
+      "client_id": "legacy-claims",
+      "application": "Legacy Claims",
+      "owner_team": "Team Atlas",
+      "business_criticality": "low",
+      "environment": "production",
+      "technical_contact": "team-atlas@example.com",
+      "tech_stack": "Legacy (JSP / .NET Framework)"
+    },
+    {
+      "client_id": "legacy-reports",
+      "application": "Legacy Reports",
+      "owner_team": "Team Borealis",
+      "business_criticality": "medium",
+      "environment": "production",
+      "technical_contact": "team-borealis@example.com",
+      "tech_stack": "Legacy (JSP / .NET Framework)"
+    },
+    {
+      "client_id": "legacy-api-orders",
+      "application": "Legacy Api Orders",
+      "owner_team": "Team Cobalt",
+      "business_criticality": "high",
+      "environment": "production",
+      "technical_contact": "team-cobalt@example.com",
+      "tech_stack": "Legacy (JSP / .NET Framework)"
+    },
+    {
+      "client_id": "legacy-api-stock",
+      "application": "Legacy Api Stock",
+      "owner_team": "Team Delta",
+      "business_criticality": "medium",
+      "environment": "production",
+      "technical_contact": "team-delta@example.com",
+      "tech_stack": "Legacy (JSP / .NET Framework)"
+    },
+    {
+      "client_id": "legacy-api-hr",
+      "application": "Legacy Api Hr",
+      "owner_team": "Team Ember",
+      "business_criticality": "medium",
+      "environment": "production",
+      "technical_contact": "team-ember@example.com",
+      "tech_stack": "Legacy (JSP / .NET Framework)"
+    },
+    {
+      "client_id": "legacy-kiosk",
+      "application": "Legacy Kiosk",
+      "owner_team": "Team Fjord",
+      "business_criticality": "medium",
+      "environment": "production",
+      "technical_contact": "team-fjord@example.com",
+      "tech_stack": "Legacy (JSP / .NET Framework)"
+    },
+    {
+      "client_id": "legacy-cli",
+      "application": "Legacy Cli",
+      "owner_team": "Team Granite",
+      "business_criticality": "high",
+      "environment": "production",
+      "technical_contact": "team-granite@example.com",
+      "tech_stack": "Legacy (JSP / .NET Framework)"
+    },
+    {
+      "client_id": "legacy-intranet",
+      "application": "Legacy Intranet",
+      "owner_team": "Team Atlas",
+      "business_criticality": "medium",
+      "environment": "production",
+      "technical_contact": "team-atlas@example.com",
+      "tech_stack": "Legacy (JSP / .NET Framework)"
+    },
+    {
+      "client_id": "legacy-batch-ui",
+      "application": "Legacy Batch Ui",
+      "owner_team": "Team Borealis",
+      "business_criticality": "high",
+      "environment": "production",
+      "technical_contact": "team-borealis@example.com",
+      "tech_stack": "Legacy (JSP / .NET Framework)"
+    }
+  ]
+}

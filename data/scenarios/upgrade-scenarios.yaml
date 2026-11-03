@@ -1,0 +1,126 @@
+# Upgrade scenarios and live breaking-change test matrix.
+#
+# - `assessments`: version pairs used by the detection accuracy tests (fixtures)
+#   and by the demo bootstrap. Ground truth lives in expected-findings.json.
+# - `live_tests`: behaviour matrix used by tests/breaking_changes against real
+#   Keycloak instances. A result is classified by the test into one of the
+#   outcome labels below and compared with the expected outcome for the server
+#   version reported by the instance itself.
+#
+# `matrix_verified: false` marks expectations taken from the technical report
+# that still have to be confirmed against the official upgrading guide.
+
+realm: demo
+
+assessments:
+  - id: s-26.5-to-26.6.3
+    source_version: 26.5.0
+    target_version: 26.6.3
+    description: Default POC pair (keycloak-source -> keycloak-target).
+  - id: s-25.0-to-26.6.3
+    source_version: 25.0.6
+    target_version: 26.6.3
+    description: Major upgrade, all breaking changes of the 26.x line apply.
+  - id: s-26.3-to-26.5
+    source_version: 26.3.0
+    target_version: 26.5.0
+    description: Minor upgrade crossing 26.4.3 only.
+
+default_assessment: s-26.5-to-26.6.3
+
+live_tests:
+  - id: redirect-wildcard
+    bc_id: KC-BC-001
+    client_id: legacy-portal
+    detection: realm JSON + OIDC test
+    request:
+      method: GET
+      path: /realms/demo/protocol/openid-connect/auth
+      params:
+        client_id: legacy-portal
+        response_type: code
+        scope: openid
+        redirect_uri: https://example.com.other.test/callback
+    outcomes:
+      accepted: "200 login page (redirect URI matched)"
+      rejected: "400 invalid redirect_uri error page"
+    expected:
+      - versions: "<26.6.3"
+        outcome: accepted
+      - versions: ">=26.6.3"
+        outcome: rejected
+    matrix_verified: false
+
+  - id: legacy-logout
+    bc_id: KC-BC-002
+    client_id: legacy-portal
+    detection: HTTP access log
+    request:
+      method: GET
+      path: /realms/demo/protocol/openid-connect/logout
+      params:
+        redirect_uri: https://example.com/logged-out
+    outcomes:
+      accepted: "302 to redirect_uri or logout confirmation page"
+      rejected: "400 'Invalid parameter: redirect_uri'"
+    expected:
+      # Before 26.0 the behaviour is accepted only when the legacy option is enabled
+      # (keycloak-legacy service in the 'legacy' compose profile).
+      - versions: "<26.0.0"
+        outcome: accepted
+      - versions: ">=26.0.0"
+        outcome: rejected
+    matrix_verified: false
+
+  - id: non-normalized-path
+    bc_id: KC-BC-003
+    client_id: anonymous
+    detection: HTTP access log + status code
+    request:
+      method: GET
+      path: /realms/demo//.well-known/openid-configuration
+      params: {}
+    outcomes:
+      accepted: "200 discovery document"
+      rejected: "400 Bad Request"
+    expected:
+      - versions: "<26.4.3"
+        outcome: accepted
+      - versions: ">=26.4.3"
+        outcome: rejected
+    matrix_verified: false
+
+  - id: role-mapper-multivalued
+    bc_id: KC-BC-004
+    client_id: svc-reporting
+    detection: realm JSON + token validation
+    request:
+      method: POST
+      path: /realms/demo/protocol/openid-connect/token
+      grant_type: client_credentials
+      claim: roles
+    outcomes:
+      string: "role claim emitted as a single string"
+      array: "role claim emitted as a JSON array"
+    expected:
+      - versions: "<26.0.0"
+        outcome: string
+      - versions: ">=26.0.0"
+        outcome: array
+    matrix_verified: false
+
+  - id: anonymous-client
+    bc_id: KC-BC-005
+    client_id: anonymous
+    detection: runtime log with client_id = "anonymous"
+    request:
+      method: POST
+      path: /realms/demo/protocol/openid-connect/token
+      data:
+        grant_type: client_credentials
+    outcomes:
+      rejected: "401 / 400 without client information"
+    expected:
+      - versions: ">=0"
+        outcome: rejected
+    matrix_verified: true

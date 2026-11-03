@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Keycloak 26 upgrading notes (POC curated excerpt)</title>
+<meta name="source-url" content="https://www.keycloak.org/docs/latest/upgrading/index.html">
+<meta name="poc-notice" content="Curated excerpt prepared for the POC. The wording paraphrases the official Keycloak upgrading guide and must be re-verified against the official documentation before being used for real assessments.">
+</head>
+<body>
+<!--
+  This file mirrors the structure produced by Asciidoctor for the official
+  Keycloak upgrading guide (div.sect1 > h2, div.sect2 > h3, div.paragraph > p),
+  so that the same parser works on the official HTML when BC_SOURCE_URL is set.
+  It is NOT a verbatim copy of the official documentation.
+-->
+<div id="content">
+
+<div class="sect1">
+<h2 id="migrating-to-26-6-3">Migrating to 26.6.3</h2>
+<div class="sectionbody">
+
+<div class="sect2">
+<h3 id="redirect-uri-wildcard-hostname">Stricter wildcard matching for valid redirect URIs</h3>
+<div class="paragraph">
+<p>Wildcards in valid redirect URIs are no longer allowed to extend the host name.
+A valid redirect URI such as https://example.com* previously also matched https://example.com.other.test/callback, because the wildcard was applied to the whole URI string.</p>
+</div>
+<div class="paragraph">
+<p>Starting with this release the wildcard is only honoured in the path component of the redirect URI.
+Authorization requests that rely on the previous behaviour are rejected with an invalid redirect_uri error.</p>
+</div>
+<div class="paragraph">
+<p>Review the clients whose valid redirect URIs contain a wildcard before the first path separator and replace them with an explicit host followed by a path wildcard, for example https://example.com/*.</p>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="sect1">
+<h2 id="migrating-to-26-4-3">Migrating to 26.4.3</h2>
+<div class="sectionbody">
+
+<div class="sect2">
+<h3 id="non-normalized-request-paths">Requests with non-normalized paths are rejected</h3>
+<div class="paragraph">
+<p>Keycloak now rejects HTTP requests whose path is not normalized, for example paths that contain double slashes (//) or dot segments such as /./ or /../.
+Such requests receive a 400 Bad Request response instead of being processed.</p>
+</div>
+<div class="paragraph">
+<p>Reverse proxies and client libraries that build request paths by string concatenation should be checked, and the generated URLs normalized before they reach Keycloak.</p>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="sect1">
+<h2 id="migrating-to-26-0-0">Migrating to 26.0.0</h2>
+<div class="sectionbody">
+
+<div class="sect2">
+<h3 id="legacy-logout-redirect-uri-removed">Legacy redirect_uri parameter of the logout endpoint removed</h3>
+<div class="paragraph">
+<p>The legacy-logout-redirect-uri option, which allowed the redirect_uri parameter on the OpenID Connect logout endpoint, has been removed.
+Logout requests that still send the redirect_uri parameter are rejected.</p>
+</div>
+<div class="paragraph">
+<p>Clients must use the post_logout_redirect_uri parameter together with the id_token_hint or client_id parameter, as defined by the OpenID Connect RP-Initiated Logout specification.</p>
+</div>
+</div>
+
+<div class="sect2">
+<h3 id="role-mappers-multivalued">Role protocol mappers always produce multivalued claims</h3>
+<div class="paragraph">
+<p>The User Realm Role and User Client Role protocol mappers always produce multivalued claims.
+The Multivalued setting of these mappers is no longer taken into account, so a role claim is always emitted as a JSON array, even when the user has a single role.</p>
+</div>
+<div class="paragraph">
+<p>Applications that parsed the role claim as a single string value must be updated to handle a JSON array.</p>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+</body>
+</html>

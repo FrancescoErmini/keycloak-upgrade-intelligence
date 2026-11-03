@@ -1,0 +1,11 @@
+{
+  "description": "Safety net for documents written to kc-runtime-logs by external shippers (e.g. Filebeat): client_id = extracted_client_id or 'anonymous', plus client_identified.",
+  "processors": [
+    {
+      "script": {
+        "lang": "painless",
+        "source": "def cid = ctx.client_id; if (cid == null && ctx.client instanceof Map) { cid = ctx.client.id; } if (cid == null && ctx.mdc instanceof Map) { cid = ctx.mdc['kc.clientId']; } if (cid == null || cid == '' || cid == 'null') { ctx.client_id = 'anonymous'; ctx.client_identified = false; } else { ctx.client_id = cid; if (ctx.client_identified == null) { ctx.client_identified = (cid != 'anonymous'); } } if (!(ctx.client instanceof Map)) { ctx.client = [:]; } ctx.client.id = ctx.client_id;"
+      }
+    }
+  ]
+}

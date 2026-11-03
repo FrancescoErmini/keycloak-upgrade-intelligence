@@ -1,0 +1,50 @@
+{
+  "settings": {"number_of_shards": 1, "number_of_replicas": 0},
+  "mappings": {
+    "dynamic": "strict",
+    "properties": {
+      "doc_type": {"type": "keyword"},
+      "snapshot_id": {"type": "keyword"},
+      "realm": {"type": "keyword"},
+      "source_file": {"type": "keyword"},
+      "client_count": {"type": "integer"},
+      "client_types": {"type": "flattened"},
+      "client_id": {"type": "keyword"},
+      "name": {"type": "text", "fields": {"raw": {"type": "keyword"}}},
+      "protocol": {"type": "keyword"},
+      "client_type": {"type": "keyword"},
+      "enabled": {"type": "boolean"},
+      "public_client": {"type": "boolean"},
+      "bearer_only": {"type": "boolean"},
+      "grant_types": {"type": "keyword"},
+      "root_url": {"type": "keyword"},
+      "redirect_uris": {"type": "keyword"},
+      "post_logout_redirect_uris": {"type": "keyword"},
+      "redirect_uri_analysis": {
+        "type": "nested",
+        "properties": {
+          "uri": {"type": "keyword"},
+          "scheme": {"type": "keyword"},
+          "authority": {"type": "keyword"},
+          "host_wildcard": {"type": "boolean"},
+          "path_wildcard": {"type": "boolean"},
+          "kind": {"type": "keyword"}
+        }
+      },
+      "web_origins": {"type": "keyword"},
+      "protocol_mappers": {
+        "type": "nested",
+        "properties": {
+          "name": {"type": "keyword"},
+          "type": {"type": "keyword"},
+          "protocol": {"type": "keyword"},
+          "claim_name": {"type": "keyword"},
+          "multivalued": {"type": "boolean"}
+        }
+      },
+      "attributes": {"type": "flattened"},
+      "inventory": {"type": "flattened"},
+      "ingested_at": {"type": "date"}
+    }
+  }
+}

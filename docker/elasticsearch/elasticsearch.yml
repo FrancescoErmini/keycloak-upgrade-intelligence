@@ -1,0 +1,9 @@
+# Single-node POC configuration. Security is disabled ONLY for the local POC:
+# enable xpack.security and TLS before exposing the cluster anywhere.
+cluster.name: kc-upgrade-analyzer
+network.host: 0.0.0.0
+discovery.type: single-node
+xpack.security.enabled: false
+xpack.security.enrollment.enabled: false
+xpack.ml.enabled: false
+action.destructive_requires_name: true

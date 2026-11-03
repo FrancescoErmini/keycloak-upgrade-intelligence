@@ -1,0 +1,2757 @@
+{
+  "realm": "demo",
+  "displayName": "Demo enterprise realm (fictitious)",
+  "enabled": true,
+  "sslRequired": "none",
+  "registrationAllowed": false,
+  "eventsEnabled": true,
+  "eventsListeners": [
+    "jboss-logging"
+  ],
+  "adminEventsEnabled": false,
+  "roles": {
+    "realm": [
+      {
+        "name": "user",
+        "description": "Standard user"
+      },
+      {
+        "name": "admin",
+        "description": "Administrator"
+      },
+      {
+        "name": "reporting-reader",
+        "description": "Can read reports"
+      },
+      {
+        "name": "auditor",
+        "description": "Read-only auditor"
+      }
+    ]
+  },
+  "users": [
+    {
+      "username": "alice",
+      "enabled": true,
+      "email": "alice@example.com",
+      "emailVerified": true,
+      "firstName": "Alice",
+      "lastName": "Example",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "alice-password",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "user",
+        "reporting-reader"
+      ]
+    },
+    {
+      "username": "service-account-svc-reporting",
+      "enabled": true,
+      "serviceAccountClientId": "svc-reporting",
+      "realmRoles": [
+        "reporting-reader"
+      ]
+    },
+    {
+      "username": "service-account-svc-ledger-sync",
+      "enabled": true,
+      "serviceAccountClientId": "svc-ledger-sync",
+      "realmRoles": [
+        "user"
+      ]
+    },
+    {
+      "username": "service-account-svc-inventory-sync",
+      "enabled": true,
+      "serviceAccountClientId": "svc-inventory-sync",
+      "realmRoles": [
+        "user"
+      ]
+    },
+    {
+      "username": "service-account-svc-billing-batch",
+      "enabled": true,
+      "serviceAccountClientId": "svc-billing-batch",
+      "realmRoles": [
+        "user"
+      ]
+    },
+    {
+      "username": "service-account-svc-notifications",
+      "enabled": true,
+      "serviceAccountClientId": "svc-notifications",
+      "realmRoles": [
+        "user"
+      ]
+    },
+    {
+      "username": "service-account-svc-search-indexer",
+      "enabled": true,
+      "serviceAccountClientId": "svc-search-indexer",
+      "realmRoles": [
+        "user"
+      ]
+    },
+    {
+      "username": "service-account-svc-payments",
+      "enabled": true,
+      "serviceAccountClientId": "svc-payments",
+      "realmRoles": [
+        "user"
+      ]
+    },
+    {
+      "username": "service-account-svc-orders",
+      "enabled": true,
+      "serviceAccountClientId": "svc-orders",
+      "realmRoles": [
+        "user"
+      ]
+    },
+    {
+      "username": "service-account-svc-shipping",
+      "enabled": true,
+      "serviceAccountClientId": "svc-shipping",
+      "realmRoles": [
+        "user"
+      ]
+    },
+    {
+      "username": "service-account-svc-pricing",
+      "enabled": true,
+      "serviceAccountClientId": "svc-pricing",
+      "realmRoles": [
+        "user"
+      ]
+    },
+    {
+      "username": "service-account-svc-catalog",
+      "enabled": true,
+      "serviceAccountClientId": "svc-catalog",
+      "realmRoles": [
+        "user"
+      ]
+    },
+    {
+      "username": "service-account-svc-identity-sync",
+      "enabled": true,
+      "serviceAccountClientId": "svc-identity-sync",
+      "realmRoles": [
+        "user"
+      ]
+    },
+    {
+      "username": "service-account-svc-audit-export",
+      "enabled": true,
+      "serviceAccountClientId": "svc-audit-export",
+      "realmRoles": [
+        "user"
+      ]
+    },
+    {
+      "username": "service-account-svc-crm-sync",
+      "enabled": true,
+      "serviceAccountClientId": "svc-crm-sync",
+      "realmRoles": [
+        "user"
+      ]
+    },
+    {
+      "username": "service-account-svc-hr-sync",
+      "enabled": true,
+      "serviceAccountClientId": "svc-hr-sync",
+      "realmRoles": [
+        "user"
+      ]
+    },
+    {
+      "username": "service-account-svc-mailer",
+      "enabled": true,
+      "serviceAccountClientId": "svc-mailer",
+      "realmRoles": [
+        "user"
+      ]
+    },
+    {
+      "username": "service-account-svc-scheduler",
+      "enabled": true,
+      "serviceAccountClientId": "svc-scheduler",
+      "realmRoles": [
+        "user"
+      ]
+    },
+    {
+      "username": "service-account-svc-archiver",
+      "enabled": true,
+      "serviceAccountClientId": "svc-archiver",
+      "realmRoles": [
+        "user"
+      ]
+    },
+    {
+      "username": "service-account-svc-metrics",
+      "enabled": true,
+      "serviceAccountClientId": "svc-metrics",
+      "realmRoles": [
+        "user"
+      ]
+    },
+    {
+      "username": "service-account-svc-fraud",
+      "enabled": true,
+      "serviceAccountClientId": "svc-fraud",
+      "realmRoles": [
+        "user"
+      ]
+    },
+    {
+      "username": "service-account-svc-loyalty",
+      "enabled": true,
+      "serviceAccountClientId": "svc-loyalty",
+      "realmRoles": [
+        "user"
+      ]
+    },
+    {
+      "username": "service-account-svc-tax",
+      "enabled": true,
+      "serviceAccountClientId": "svc-tax",
+      "realmRoles": [
+        "user"
+      ]
+    },
+    {
+      "username": "service-account-svc-gateway",
+      "enabled": true,
+      "serviceAccountClientId": "svc-gateway",
+      "realmRoles": [
+        "user"
+      ]
+    },
+    {
+      "username": "service-account-svc-etl",
+      "enabled": true,
+      "serviceAccountClientId": "svc-etl",
+      "realmRoles": [
+        "user"
+      ]
+    },
+    {
+      "username": "service-account-svc-backup",
+      "enabled": true,
+      "serviceAccountClientId": "svc-backup",
+      "realmRoles": [
+        "user"
+      ]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "hr-portal",
+      "name": "Hr Portal",
+      "description": "Hr Portal (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://hr-portal.example.com*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "https://hr-portal.example.com/*"
+      },
+      "protocolMappers": [],
+      "secret": "8a68ba22ab684ce57b7f53623b4b10b7",
+      "rootUrl": "https://hr-portal.example.com"
+    },
+    {
+      "clientId": "crm-web",
+      "name": "Crm Web",
+      "description": "Crm Web (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://crm.example.com*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "https://crm.example.com/*"
+      },
+      "protocolMappers": [],
+      "secret": "c8e4c8d3bf2dba4960e92e8633a0637e",
+      "rootUrl": "https://crm.example.com"
+    },
+    {
+      "clientId": "intranet",
+      "name": "Intranet",
+      "description": "Intranet (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://intranet.example.com*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "https://intranet.example.com/*"
+      },
+      "protocolMappers": [],
+      "secret": "ee1e4780560c283ddb884b8f1b6db7c4",
+      "rootUrl": "https://intranet.example.com"
+    },
+    {
+      "clientId": "expense-web",
+      "name": "Expense Web",
+      "description": "Expense Web (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://expense.example.com*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "https://expense.example.com/*"
+      },
+      "protocolMappers": [],
+      "secret": "f13ac150cd0395e2aee7fa8a917f3934",
+      "rootUrl": "https://expense.example.com"
+    },
+    {
+      "clientId": "procurement-web",
+      "name": "Procurement Web",
+      "description": "Procurement Web (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://procurement.example.com*",
+        "https://procurement.example.com/callback"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "https://procurement.example.com/*"
+      },
+      "protocolMappers": [],
+      "secret": "ac5976828c525a1dae743b093f4545c1",
+      "rootUrl": "https://procurement.example.com"
+    },
+    {
+      "clientId": "wiki-web",
+      "name": "Wiki Web",
+      "description": "Wiki Web (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://wiki.example.com*",
+        "https://wiki.example.com/callback"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "https://wiki.example.com/*"
+      },
+      "protocolMappers": [],
+      "secret": "3350459cd46e2fad0489d5c5f70d49c2",
+      "rootUrl": "https://wiki.example.com"
+    },
+    {
+      "clientId": "old-claims-web",
+      "name": "Old Claims Web",
+      "description": "Old Claims Web (fictitious, generated for the POC)",
+      "enabled": false,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://old-claims.example.com*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "https://old-claims.example.com/*"
+      },
+      "protocolMappers": [],
+      "secret": "0b5b41b5e7f3b50c4e7ab219e8cc765c",
+      "rootUrl": "https://old-claims.example.com"
+    },
+    {
+      "clientId": "travel-web",
+      "name": "Travel Web",
+      "description": "Travel Web (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://travel.example.com/*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "https://travel.example.com/*"
+      },
+      "protocolMappers": [],
+      "secret": "32d803f631a467334136a5ad3e23a381",
+      "rootUrl": "https://travel.example.com"
+    },
+    {
+      "clientId": "payroll-web",
+      "name": "Payroll Web",
+      "description": "Payroll Web (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://payroll.example.com/*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "https://payroll.example.com/*"
+      },
+      "protocolMappers": [],
+      "secret": "321b928f0b67711721a331d1ef9e936e",
+      "rootUrl": "https://payroll.example.com"
+    },
+    {
+      "clientId": "helpdesk-web",
+      "name": "Helpdesk Web",
+      "description": "Helpdesk Web (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://helpdesk.example.com/*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "https://helpdesk.example.com/*"
+      },
+      "protocolMappers": [],
+      "secret": "7d7f6ab7fc05e4a8a5f5c5354eb35ec9",
+      "rootUrl": "https://helpdesk.example.com"
+    },
+    {
+      "clientId": "billing-web",
+      "name": "Billing Web",
+      "description": "Billing Web (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://billing.example.com/*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "https://billing.example.com/*"
+      },
+      "protocolMappers": [],
+      "secret": "e537be2f1033ee47eba1595eaf068f29",
+      "rootUrl": "https://billing.example.com"
+    },
+    {
+      "clientId": "analytics-web",
+      "name": "Analytics Web",
+      "description": "Analytics Web (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://analytics.example.com/*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "https://analytics.example.com/*"
+      },
+      "protocolMappers": [
+        {
+          "name": "realm roles (single)",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "multivalued": "false",
+            "claim.name": "roles",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "introspection.token.claim": "true"
+          }
+        },
+        {
+          "name": "department attribute",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.attribute": "department",
+            "claim.name": "department",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ],
+      "secret": "6c3cd6a2b3a70de69d10b11ff14eb0d3",
+      "rootUrl": "https://analytics.example.com"
+    },
+    {
+      "clientId": "timesheet-web",
+      "name": "Timesheet Web",
+      "description": "Timesheet Web (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://timesheet.example.com/*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "https://timesheet.example.com/*"
+      },
+      "protocolMappers": [],
+      "secret": "265828b0d6184de643803b5b32840b11",
+      "rootUrl": "https://timesheet.example.com"
+    },
+    {
+      "clientId": "learning-web",
+      "name": "Learning Web",
+      "description": "Learning Web (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://learning.example.com/*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "https://learning.example.com/*"
+      },
+      "protocolMappers": [],
+      "secret": "4da999e1ce4aaf1decb0d151002d4585",
+      "rootUrl": "https://learning.example.com"
+    },
+    {
+      "clientId": "recruiting-web",
+      "name": "Recruiting Web",
+      "description": "Recruiting Web (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://recruiting.example.com/*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "https://recruiting.example.com/*"
+      },
+      "protocolMappers": [],
+      "secret": "721c13581ec91e4b66e19e330e1ea163",
+      "rootUrl": "https://recruiting.example.com"
+    },
+    {
+      "clientId": "assets-web",
+      "name": "Assets Web",
+      "description": "Assets Web (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://assets.example.com/*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "https://assets.example.com/*"
+      },
+      "protocolMappers": [],
+      "secret": "8558563744df0d62ddd36967bd7d7a30",
+      "rootUrl": "https://assets.example.com"
+    },
+    {
+      "clientId": "contracts-web",
+      "name": "Contracts Web",
+      "description": "Contracts Web (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://contracts.example.com/*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "https://contracts.example.com/*"
+      },
+      "protocolMappers": [
+        {
+          "name": "realm roles (multi)",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "multivalued": "true",
+            "claim.name": "roles",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "introspection.token.claim": "true"
+          }
+        }
+      ],
+      "secret": "c7ab038b078fe4a4c5360a8bdeb14fa8",
+      "rootUrl": "https://contracts.example.com"
+    },
+    {
+      "clientId": "legal-web",
+      "name": "Legal Web",
+      "description": "Legal Web (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://legal.example.com/*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "https://legal.example.com/*"
+      },
+      "protocolMappers": [
+        {
+          "name": "client roles (multi)",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-client-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "multivalued": "true",
+            "claim.name": "roles",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "introspection.token.claim": "true",
+            "usermodel.clientRoleMapping.clientId": "${client_id}"
+          }
+        },
+        {
+          "name": "employee_id attribute",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.attribute": "employee_id",
+            "claim.name": "employee_id",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ],
+      "secret": "e826684c72b308ae74035960fac09d35",
+      "rootUrl": "https://legal.example.com"
+    },
+    {
+      "clientId": "facilities-web",
+      "name": "Facilities Web",
+      "description": "Facilities Web (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://facilities.example.com/*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "https://facilities.example.com/*"
+      },
+      "protocolMappers": [],
+      "secret": "f2718692607a3fbf78fc8e246b6f3d98",
+      "rootUrl": "https://facilities.example.com"
+    },
+    {
+      "clientId": "benefits-web",
+      "name": "Benefits Web",
+      "description": "Benefits Web (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://benefits.example.com/*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "https://benefits.example.com/*"
+      },
+      "protocolMappers": [],
+      "secret": "62927ff0cc5a2ca34ad252b794c7e2c5",
+      "rootUrl": "https://benefits.example.com"
+    },
+    {
+      "clientId": "marketing-web",
+      "name": "Marketing Web",
+      "description": "Marketing Web (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://marketing.example.com/*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "https://marketing.example.com/*"
+      },
+      "protocolMappers": [],
+      "secret": "dc4e2813fe1389317b6ac56aaca6171e",
+      "rootUrl": "https://marketing.example.com"
+    },
+    {
+      "clientId": "partner-web",
+      "name": "Partner Web",
+      "description": "Partner Web (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://partner.example.com/*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "https://partner.example.com/*"
+      },
+      "protocolMappers": [],
+      "secret": "c72611c854d09793859c06743e022256",
+      "rootUrl": "https://partner.example.com"
+    },
+    {
+      "clientId": "supplier-web",
+      "name": "Supplier Web",
+      "description": "Supplier Web (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://supplier.example.com/*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "https://supplier.example.com/*"
+      },
+      "protocolMappers": [],
+      "secret": "eb81d135b5ca5a88aea54b1eb71be6ab",
+      "rootUrl": "https://supplier.example.com"
+    },
+    {
+      "clientId": "quality-web",
+      "name": "Quality Web",
+      "description": "Quality Web (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://quality.example.com/*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "https://quality.example.com/*"
+      },
+      "protocolMappers": [],
+      "secret": "8b1f27ea6f0481885dea1af4dd7859ad",
+      "rootUrl": "https://quality.example.com"
+    },
+    {
+      "clientId": "projects-web",
+      "name": "Projects Web",
+      "description": "Projects Web (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://projects.example.com/*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "https://projects.example.com/*"
+      },
+      "protocolMappers": [],
+      "secret": "038ae2634a1234a12d341a84b6dd5ff4",
+      "rootUrl": "https://projects.example.com"
+    },
+    {
+      "clientId": "compliance-web",
+      "name": "Compliance Web",
+      "description": "Compliance Web (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://compliance.example.com/*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "https://compliance.example.com/*"
+      },
+      "protocolMappers": [],
+      "secret": "b876672cadf539526678d3c9208fda46",
+      "rootUrl": "https://compliance.example.com"
+    },
+    {
+      "clientId": "audit-web",
+      "name": "Audit Web",
+      "description": "Audit Web (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://audit.example.com/*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "https://audit.example.com/*"
+      },
+      "protocolMappers": [],
+      "secret": "8407b1d8e461e7b4e002b2fd739b8fc1",
+      "rootUrl": "https://audit.example.com"
+    },
+    {
+      "clientId": "treasury-web",
+      "name": "Treasury Web",
+      "description": "Treasury Web (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://treasury.example.com/*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "https://treasury.example.com/*"
+      },
+      "protocolMappers": [],
+      "secret": "a88b896aabaa69cbe1e1c7daa2adabda",
+      "rootUrl": "https://treasury.example.com"
+    },
+    {
+      "clientId": "risk-web",
+      "name": "Risk Web",
+      "description": "Risk Web (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://risk.example.com/*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "https://risk.example.com/*"
+      },
+      "protocolMappers": [],
+      "secret": "be3a562faaf7126b86dd9990d6d55c5d",
+      "rootUrl": "https://risk.example.com"
+    },
+    {
+      "clientId": "sales-web",
+      "name": "Sales Web",
+      "description": "Sales Web (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://sales.example.com/*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "https://sales.example.com/*"
+      },
+      "protocolMappers": [],
+      "secret": "9784e36d329146302513105755983626",
+      "rootUrl": "https://sales.example.com"
+    },
+    {
+      "clientId": "support-web",
+      "name": "Support Web",
+      "description": "Support Web (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://support.example.com/*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "https://support.example.com/*"
+      },
+      "protocolMappers": [],
+      "secret": "39200f75439dbaaf7305111cefb975e6",
+      "rootUrl": "https://support.example.com"
+    },
+    {
+      "clientId": "events-web",
+      "name": "Events Web",
+      "description": "Events Web (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://events.example.com/*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "https://events.example.com/*"
+      },
+      "protocolMappers": [],
+      "secret": "6cb66b7d732b31efb51f469e4d0f9c5d",
+      "rootUrl": "https://events.example.com"
+    },
+    {
+      "clientId": "fleet-web",
+      "name": "Fleet Web",
+      "description": "Fleet Web (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://fleet.example.com/*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "https://fleet.example.com/*"
+      },
+      "protocolMappers": [],
+      "secret": "0b19b67cc6bf5876eab1a76dd4e5a842",
+      "rootUrl": "https://fleet.example.com"
+    },
+    {
+      "clientId": "safety-web",
+      "name": "Safety Web",
+      "description": "Safety Web (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://safety.example.com/*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "https://safety.example.com/*"
+      },
+      "protocolMappers": [],
+      "secret": "d42725b75fa9a2b76d5477ec14c26194",
+      "rootUrl": "https://safety.example.com"
+    },
+    {
+      "clientId": "docs-web",
+      "name": "Docs Web",
+      "description": "Docs Web (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://docs.example.com/*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "https://docs.example.com/*"
+      },
+      "protocolMappers": [],
+      "secret": "57fad95e0acd805546524ce9f001941d",
+      "rootUrl": "https://docs.example.com"
+    },
+    {
+      "clientId": "svc-reporting",
+      "name": "Svc Reporting",
+      "description": "Svc Reporting (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [],
+      "webOrigins": [],
+      "attributes": {},
+      "protocolMappers": [
+        {
+          "name": "realm roles (single)",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "multivalued": "false",
+            "claim.name": "roles",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "introspection.token.claim": "true"
+          }
+        }
+      ],
+      "secret": "c017dc752a0a97726ea7fcb5c3eb30c4"
+    },
+    {
+      "clientId": "svc-ledger-sync",
+      "name": "Svc Ledger Sync",
+      "description": "Svc Ledger Sync (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [],
+      "webOrigins": [],
+      "attributes": {},
+      "protocolMappers": [
+        {
+          "name": "client roles (single)",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-client-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "multivalued": "false",
+            "claim.name": "ledger_roles",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "introspection.token.claim": "true",
+            "usermodel.clientRoleMapping.clientId": "${client_id}"
+          }
+        }
+      ],
+      "secret": "4786f1689b1578a98481f3a3575b47af"
+    },
+    {
+      "clientId": "svc-inventory-sync",
+      "name": "Svc Inventory Sync",
+      "description": "Svc Inventory Sync (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [],
+      "webOrigins": [],
+      "attributes": {},
+      "protocolMappers": [],
+      "secret": "76c031b7f1cd5ec935233cb5c78d27f6"
+    },
+    {
+      "clientId": "svc-billing-batch",
+      "name": "Svc Billing Batch",
+      "description": "Svc Billing Batch (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [],
+      "webOrigins": [],
+      "attributes": {},
+      "protocolMappers": [],
+      "secret": "18f74233ecb7989b6bcb30bde9e87485"
+    },
+    {
+      "clientId": "svc-notifications",
+      "name": "Svc Notifications",
+      "description": "Svc Notifications (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [],
+      "webOrigins": [],
+      "attributes": {},
+      "protocolMappers": [],
+      "secret": "55ff17ee7ab2d44b15be9b8aa39d57f5"
+    },
+    {
+      "clientId": "svc-search-indexer",
+      "name": "Svc Search Indexer",
+      "description": "Svc Search Indexer (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [],
+      "webOrigins": [],
+      "attributes": {},
+      "protocolMappers": [],
+      "secret": "0e6b18829795caae4d2627c1bafec212"
+    },
+    {
+      "clientId": "svc-payments",
+      "name": "Svc Payments",
+      "description": "Svc Payments (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [],
+      "webOrigins": [],
+      "attributes": {},
+      "protocolMappers": [
+        {
+          "name": "realm roles (multi)",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "multivalued": "true",
+            "claim.name": "roles",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "introspection.token.claim": "true"
+          }
+        }
+      ],
+      "secret": "6d4036976fd5419bd7578ab96f245080"
+    },
+    {
+      "clientId": "svc-orders",
+      "name": "Svc Orders",
+      "description": "Svc Orders (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [],
+      "webOrigins": [],
+      "attributes": {},
+      "protocolMappers": [],
+      "secret": "ba5b84ef833198ef4e3e51629f132af6"
+    },
+    {
+      "clientId": "svc-shipping",
+      "name": "Svc Shipping",
+      "description": "Svc Shipping (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [],
+      "webOrigins": [],
+      "attributes": {},
+      "protocolMappers": [],
+      "secret": "751a4558e0e9b7f612220b5df60f2a5c"
+    },
+    {
+      "clientId": "svc-pricing",
+      "name": "Svc Pricing",
+      "description": "Svc Pricing (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [],
+      "webOrigins": [],
+      "attributes": {},
+      "protocolMappers": [],
+      "secret": "5baf97fcccb62a1f6eed8f3a3be17dbe"
+    },
+    {
+      "clientId": "svc-catalog",
+      "name": "Svc Catalog",
+      "description": "Svc Catalog (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [],
+      "webOrigins": [],
+      "attributes": {},
+      "protocolMappers": [],
+      "secret": "5ec99ed567493af9c7aa62e277506cf7"
+    },
+    {
+      "clientId": "svc-identity-sync",
+      "name": "Svc Identity Sync",
+      "description": "Svc Identity Sync (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [],
+      "webOrigins": [],
+      "attributes": {},
+      "protocolMappers": [],
+      "secret": "bd90cada2caf2d053aba9f832b5f64e9"
+    },
+    {
+      "clientId": "svc-audit-export",
+      "name": "Svc Audit Export",
+      "description": "Svc Audit Export (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [],
+      "webOrigins": [],
+      "attributes": {},
+      "protocolMappers": [],
+      "secret": "e950f71406b115d6e05a2c65ff4c7f26"
+    },
+    {
+      "clientId": "svc-crm-sync",
+      "name": "Svc Crm Sync",
+      "description": "Svc Crm Sync (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [],
+      "webOrigins": [],
+      "attributes": {},
+      "protocolMappers": [],
+      "secret": "f594520643c017f2edcb3c41bc6b917d"
+    },
+    {
+      "clientId": "svc-hr-sync",
+      "name": "Svc Hr Sync",
+      "description": "Svc Hr Sync (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [],
+      "webOrigins": [],
+      "attributes": {},
+      "protocolMappers": [],
+      "secret": "4c854c950c1cb540b5a62f8394c430b9"
+    },
+    {
+      "clientId": "svc-mailer",
+      "name": "Svc Mailer",
+      "description": "Svc Mailer (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [],
+      "webOrigins": [],
+      "attributes": {},
+      "protocolMappers": [],
+      "secret": "a32efd2fb576333727de5ed1c20d7859"
+    },
+    {
+      "clientId": "svc-scheduler",
+      "name": "Svc Scheduler",
+      "description": "Svc Scheduler (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [],
+      "webOrigins": [],
+      "attributes": {},
+      "protocolMappers": [],
+      "secret": "2d716f77b64935e275bf20c2c8ffee0a"
+    },
+    {
+      "clientId": "svc-archiver",
+      "name": "Svc Archiver",
+      "description": "Svc Archiver (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [],
+      "webOrigins": [],
+      "attributes": {},
+      "protocolMappers": [],
+      "secret": "973bb46a3ca01dba4f83d4bdb2f0f7a7"
+    },
+    {
+      "clientId": "svc-metrics",
+      "name": "Svc Metrics",
+      "description": "Svc Metrics (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [],
+      "webOrigins": [],
+      "attributes": {},
+      "protocolMappers": [],
+      "secret": "14718cd4cb68915069d4790617a1d813"
+    },
+    {
+      "clientId": "svc-fraud",
+      "name": "Svc Fraud",
+      "description": "Svc Fraud (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [],
+      "webOrigins": [],
+      "attributes": {},
+      "protocolMappers": [],
+      "secret": "a0d74f53d2d34c929d3d7b8f4260cb66"
+    },
+    {
+      "clientId": "svc-loyalty",
+      "name": "Svc Loyalty",
+      "description": "Svc Loyalty (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [],
+      "webOrigins": [],
+      "attributes": {},
+      "protocolMappers": [],
+      "secret": "c63bfb1b2f09c3d1e7a2593f2d0f0b3d"
+    },
+    {
+      "clientId": "svc-tax",
+      "name": "Svc Tax",
+      "description": "Svc Tax (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [],
+      "webOrigins": [],
+      "attributes": {},
+      "protocolMappers": [],
+      "secret": "fe7986e67cd4578a3e781ca4ed347cdd"
+    },
+    {
+      "clientId": "svc-gateway",
+      "name": "Svc Gateway",
+      "description": "Svc Gateway (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [],
+      "webOrigins": [],
+      "attributes": {},
+      "protocolMappers": [],
+      "secret": "40e45ca473b91f7291e01dfd2354f5c7"
+    },
+    {
+      "clientId": "svc-etl",
+      "name": "Svc Etl",
+      "description": "Svc Etl (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [],
+      "webOrigins": [],
+      "attributes": {},
+      "protocolMappers": [],
+      "secret": "ca4b9e95b5161a53c86f0187fd9773cd"
+    },
+    {
+      "clientId": "svc-backup",
+      "name": "Svc Backup",
+      "description": "Svc Backup (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [],
+      "webOrigins": [],
+      "attributes": {},
+      "protocolMappers": [],
+      "secret": "bed095b5fac6a8de33e970cc92c10718"
+    },
+    {
+      "clientId": "spa-catalog",
+      "name": "Spa Catalog",
+      "description": "Spa Catalog (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://catalog-app.example.com/*"
+      ],
+      "webOrigins": [
+        "https://catalog-app.example.com"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "https://catalog-app.example.com/*"
+      },
+      "protocolMappers": []
+    },
+    {
+      "clientId": "spa-checkout",
+      "name": "Spa Checkout",
+      "description": "Spa Checkout (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://checkout-app.example.com/*"
+      ],
+      "webOrigins": [
+        "https://checkout-app.example.com"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "https://checkout-app.example.com/*"
+      },
+      "protocolMappers": []
+    },
+    {
+      "clientId": "spa-dashboard",
+      "name": "Spa Dashboard",
+      "description": "Spa Dashboard (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://dashboard-app.example.com/*"
+      ],
+      "webOrigins": [
+        "https://dashboard-app.example.com"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "https://dashboard-app.example.com/*"
+      },
+      "protocolMappers": []
+    },
+    {
+      "clientId": "spa-mobile-web",
+      "name": "Spa Mobile Web",
+      "description": "Spa Mobile Web (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://mobile-web-app.example.com/*"
+      ],
+      "webOrigins": [
+        "https://mobile-web-app.example.com"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "https://mobile-web-app.example.com/*"
+      },
+      "protocolMappers": []
+    },
+    {
+      "clientId": "spa-store-locator",
+      "name": "Spa Store Locator",
+      "description": "Spa Store Locator (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://store-locator-app.example.com/*"
+      ],
+      "webOrigins": [
+        "https://store-locator-app.example.com"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "https://store-locator-app.example.com/*"
+      },
+      "protocolMappers": []
+    },
+    {
+      "clientId": "spa-chat",
+      "name": "Spa Chat",
+      "description": "Spa Chat (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://chat-app.example.com/*"
+      ],
+      "webOrigins": [
+        "https://chat-app.example.com"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "https://chat-app.example.com/*"
+      },
+      "protocolMappers": []
+    },
+    {
+      "clientId": "spa-kiosk",
+      "name": "Spa Kiosk",
+      "description": "Spa Kiosk (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://kiosk-app.example.com/*"
+      ],
+      "webOrigins": [
+        "https://kiosk-app.example.com"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "https://kiosk-app.example.com/*"
+      },
+      "protocolMappers": []
+    },
+    {
+      "clientId": "spa-survey",
+      "name": "Spa Survey",
+      "description": "Spa Survey (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://survey-app.example.com/*"
+      ],
+      "webOrigins": [
+        "https://survey-app.example.com"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "https://survey-app.example.com/*"
+      },
+      "protocolMappers": []
+    },
+    {
+      "clientId": "spa-booking",
+      "name": "Spa Booking",
+      "description": "Spa Booking (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://booking-app.example.com/*"
+      ],
+      "webOrigins": [
+        "https://booking-app.example.com"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "https://booking-app.example.com/*"
+      },
+      "protocolMappers": []
+    },
+    {
+      "clientId": "spa-wallet",
+      "name": "Spa Wallet",
+      "description": "Spa Wallet (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://wallet-app.example.com/*"
+      ],
+      "webOrigins": [
+        "https://wallet-app.example.com"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "https://wallet-app.example.com/*"
+      },
+      "protocolMappers": []
+    },
+    {
+      "clientId": "spa-feedback",
+      "name": "Spa Feedback",
+      "description": "Spa Feedback (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://feedback-app.example.com/*"
+      ],
+      "webOrigins": [
+        "https://feedback-app.example.com"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "https://feedback-app.example.com/*"
+      },
+      "protocolMappers": []
+    },
+    {
+      "clientId": "spa-careers",
+      "name": "Spa Careers",
+      "description": "Spa Careers (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://careers-app.example.com/*"
+      ],
+      "webOrigins": [
+        "https://careers-app.example.com"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "https://careers-app.example.com/*"
+      },
+      "protocolMappers": []
+    },
+    {
+      "clientId": "spa-status",
+      "name": "Spa Status",
+      "description": "Spa Status (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://status-app.example.com/*"
+      ],
+      "webOrigins": [
+        "https://status-app.example.com"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "https://status-app.example.com/*"
+      },
+      "protocolMappers": []
+    },
+    {
+      "clientId": "spa-forum",
+      "name": "Spa Forum",
+      "description": "Spa Forum (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://forum-app.example.com/*"
+      ],
+      "webOrigins": [
+        "https://forum-app.example.com"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "https://forum-app.example.com/*"
+      },
+      "protocolMappers": []
+    },
+    {
+      "clientId": "spa-maps",
+      "name": "Spa Maps",
+      "description": "Spa Maps (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://maps-app.example.com/*"
+      ],
+      "webOrigins": [
+        "https://maps-app.example.com"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "https://maps-app.example.com/*"
+      },
+      "protocolMappers": []
+    },
+    {
+      "clientId": "saml-payroll",
+      "name": "Saml Payroll",
+      "description": "SAML service provider for Saml Payroll (fictitious)",
+      "enabled": true,
+      "protocol": "saml",
+      "rootUrl": "https://sp-payroll.example.com",
+      "redirectUris": [
+        "https://sp-payroll.example.com/saml/acs/*"
+      ],
+      "frontchannelLogout": true,
+      "fullScopeAllowed": true,
+      "attributes": {
+        "saml.signature.algorithm": "RSA_SHA256",
+        "saml_name_id_format": "username",
+        "saml.client.signature": "false",
+        "saml.force.post.binding": "true",
+        "saml.server.signature": "true",
+        "saml_assertion_consumer_url_post": "https://sp-payroll.example.com/saml/acs"
+      },
+      "protocolMappers": []
+    },
+    {
+      "clientId": "saml-erp",
+      "name": "Saml Erp",
+      "description": "SAML service provider for Saml Erp (fictitious)",
+      "enabled": true,
+      "protocol": "saml",
+      "rootUrl": "https://sp-erp.example.com",
+      "redirectUris": [
+        "https://sp-erp.example.com/saml/acs/*"
+      ],
+      "frontchannelLogout": true,
+      "fullScopeAllowed": true,
+      "attributes": {
+        "saml.signature.algorithm": "RSA_SHA256",
+        "saml_name_id_format": "username",
+        "saml.client.signature": "false",
+        "saml.force.post.binding": "true",
+        "saml.server.signature": "true",
+        "saml_assertion_consumer_url_post": "https://sp-erp.example.com/saml/acs"
+      },
+      "protocolMappers": []
+    },
+    {
+      "clientId": "saml-expenses",
+      "name": "Saml Expenses",
+      "description": "SAML service provider for Saml Expenses (fictitious)",
+      "enabled": true,
+      "protocol": "saml",
+      "rootUrl": "https://sp-expenses.example.com",
+      "redirectUris": [
+        "https://sp-expenses.example.com/saml/acs/*"
+      ],
+      "frontchannelLogout": true,
+      "fullScopeAllowed": true,
+      "attributes": {
+        "saml.signature.algorithm": "RSA_SHA256",
+        "saml_name_id_format": "username",
+        "saml.client.signature": "false",
+        "saml.force.post.binding": "true",
+        "saml.server.signature": "true",
+        "saml_assertion_consumer_url_post": "https://sp-expenses.example.com/saml/acs"
+      },
+      "protocolMappers": []
+    },
+    {
+      "clientId": "saml-lms",
+      "name": "Saml Lms",
+      "description": "SAML service provider for Saml Lms (fictitious)",
+      "enabled": true,
+      "protocol": "saml",
+      "rootUrl": "https://sp-lms.example.com",
+      "redirectUris": [
+        "https://sp-lms.example.com/saml/acs/*"
+      ],
+      "frontchannelLogout": true,
+      "fullScopeAllowed": true,
+      "attributes": {
+        "saml.signature.algorithm": "RSA_SHA256",
+        "saml_name_id_format": "username",
+        "saml.client.signature": "false",
+        "saml.force.post.binding": "true",
+        "saml.server.signature": "true",
+        "saml_assertion_consumer_url_post": "https://sp-lms.example.com/saml/acs"
+      },
+      "protocolMappers": []
+    },
+    {
+      "clientId": "saml-wiki",
+      "name": "Saml Wiki",
+      "description": "SAML service provider for Saml Wiki (fictitious)",
+      "enabled": true,
+      "protocol": "saml",
+      "rootUrl": "https://sp-wiki.example.com",
+      "redirectUris": [
+        "https://sp-wiki.example.com/saml/acs/*"
+      ],
+      "frontchannelLogout": true,
+      "fullScopeAllowed": true,
+      "attributes": {
+        "saml.signature.algorithm": "RSA_SHA256",
+        "saml_name_id_format": "username",
+        "saml.client.signature": "false",
+        "saml.force.post.binding": "true",
+        "saml.server.signature": "true",
+        "saml_assertion_consumer_url_post": "https://sp-wiki.example.com/saml/acs"
+      },
+      "protocolMappers": []
+    },
+    {
+      "clientId": "saml-vpn-portal",
+      "name": "Saml Vpn Portal",
+      "description": "SAML service provider for Saml Vpn Portal (fictitious)",
+      "enabled": true,
+      "protocol": "saml",
+      "rootUrl": "https://sp-vpn-portal.example.com",
+      "redirectUris": [
+        "https://sp-vpn-portal.example.com/saml/acs/*"
+      ],
+      "frontchannelLogout": true,
+      "fullScopeAllowed": true,
+      "attributes": {
+        "saml.signature.algorithm": "RSA_SHA256",
+        "saml_name_id_format": "username",
+        "saml.client.signature": "false",
+        "saml.force.post.binding": "true",
+        "saml.server.signature": "true",
+        "saml_assertion_consumer_url_post": "https://sp-vpn-portal.example.com/saml/acs"
+      },
+      "protocolMappers": []
+    },
+    {
+      "clientId": "saml-ticketing",
+      "name": "Saml Ticketing",
+      "description": "SAML service provider for Saml Ticketing (fictitious)",
+      "enabled": true,
+      "protocol": "saml",
+      "rootUrl": "https://sp-ticketing.example.com",
+      "redirectUris": [
+        "https://sp-ticketing.example.com/saml/acs/*"
+      ],
+      "frontchannelLogout": true,
+      "fullScopeAllowed": true,
+      "attributes": {
+        "saml.signature.algorithm": "RSA_SHA256",
+        "saml_name_id_format": "username",
+        "saml.client.signature": "false",
+        "saml.force.post.binding": "true",
+        "saml.server.signature": "true",
+        "saml_assertion_consumer_url_post": "https://sp-ticketing.example.com/saml/acs"
+      },
+      "protocolMappers": []
+    },
+    {
+      "clientId": "saml-crm",
+      "name": "Saml Crm",
+      "description": "SAML service provider for Saml Crm (fictitious)",
+      "enabled": true,
+      "protocol": "saml",
+      "rootUrl": "https://sp-crm.example.com",
+      "redirectUris": [
+        "https://sp-crm.example.com/saml/acs/*"
+      ],
+      "frontchannelLogout": true,
+      "fullScopeAllowed": true,
+      "attributes": {
+        "saml.signature.algorithm": "RSA_SHA256",
+        "saml_name_id_format": "username",
+        "saml.client.signature": "false",
+        "saml.force.post.binding": "true",
+        "saml.server.signature": "true",
+        "saml_assertion_consumer_url_post": "https://sp-crm.example.com/saml/acs"
+      },
+      "protocolMappers": []
+    },
+    {
+      "clientId": "saml-docs",
+      "name": "Saml Docs",
+      "description": "SAML service provider for Saml Docs (fictitious)",
+      "enabled": true,
+      "protocol": "saml",
+      "rootUrl": "https://sp-docs.example.com",
+      "redirectUris": [
+        "https://sp-docs.example.com/saml/acs/*"
+      ],
+      "frontchannelLogout": true,
+      "fullScopeAllowed": true,
+      "attributes": {
+        "saml.signature.algorithm": "RSA_SHA256",
+        "saml_name_id_format": "username",
+        "saml.client.signature": "false",
+        "saml.force.post.binding": "true",
+        "saml.server.signature": "true",
+        "saml_assertion_consumer_url_post": "https://sp-docs.example.com/saml/acs"
+      },
+      "protocolMappers": []
+    },
+    {
+      "clientId": "saml-intranet",
+      "name": "Saml Intranet",
+      "description": "SAML service provider for Saml Intranet (fictitious)",
+      "enabled": true,
+      "protocol": "saml",
+      "rootUrl": "https://sp-intranet.example.com",
+      "redirectUris": [
+        "https://sp-intranet.example.com/saml/acs/*"
+      ],
+      "frontchannelLogout": true,
+      "fullScopeAllowed": true,
+      "attributes": {
+        "saml.signature.algorithm": "RSA_SHA256",
+        "saml_name_id_format": "username",
+        "saml.client.signature": "false",
+        "saml.force.post.binding": "true",
+        "saml.server.signature": "true",
+        "saml_assertion_consumer_url_post": "https://sp-intranet.example.com/saml/acs"
+      },
+      "protocolMappers": []
+    },
+    {
+      "clientId": "saml-benefits",
+      "name": "Saml Benefits",
+      "description": "SAML service provider for Saml Benefits (fictitious)",
+      "enabled": true,
+      "protocol": "saml",
+      "rootUrl": "https://sp-benefits.example.com",
+      "redirectUris": [
+        "https://sp-benefits.example.com/saml/acs/*"
+      ],
+      "frontchannelLogout": true,
+      "fullScopeAllowed": true,
+      "attributes": {
+        "saml.signature.algorithm": "RSA_SHA256",
+        "saml_name_id_format": "username",
+        "saml.client.signature": "false",
+        "saml.force.post.binding": "true",
+        "saml.server.signature": "true",
+        "saml_assertion_consumer_url_post": "https://sp-benefits.example.com/saml/acs"
+      },
+      "protocolMappers": []
+    },
+    {
+      "clientId": "saml-procurement",
+      "name": "Saml Procurement",
+      "description": "SAML service provider for Saml Procurement (fictitious)",
+      "enabled": true,
+      "protocol": "saml",
+      "rootUrl": "https://sp-procurement.example.com",
+      "redirectUris": [
+        "https://sp-procurement.example.com/saml/acs/*"
+      ],
+      "frontchannelLogout": true,
+      "fullScopeAllowed": true,
+      "attributes": {
+        "saml.signature.algorithm": "RSA_SHA256",
+        "saml_name_id_format": "username",
+        "saml.client.signature": "false",
+        "saml.force.post.binding": "true",
+        "saml.server.signature": "true",
+        "saml_assertion_consumer_url_post": "https://sp-procurement.example.com/saml/acs"
+      },
+      "protocolMappers": []
+    },
+    {
+      "clientId": "saml-signing",
+      "name": "Saml Signing",
+      "description": "SAML service provider for Saml Signing (fictitious)",
+      "enabled": true,
+      "protocol": "saml",
+      "rootUrl": "https://sp-signing.example.com",
+      "redirectUris": [
+        "https://sp-signing.example.com/saml/acs/*"
+      ],
+      "frontchannelLogout": true,
+      "fullScopeAllowed": true,
+      "attributes": {
+        "saml.signature.algorithm": "RSA_SHA256",
+        "saml_name_id_format": "username",
+        "saml.client.signature": "false",
+        "saml.force.post.binding": "true",
+        "saml.server.signature": "true",
+        "saml_assertion_consumer_url_post": "https://sp-signing.example.com/saml/acs"
+      },
+      "protocolMappers": []
+    },
+    {
+      "clientId": "saml-travel",
+      "name": "Saml Travel",
+      "description": "SAML service provider for Saml Travel (fictitious)",
+      "enabled": true,
+      "protocol": "saml",
+      "rootUrl": "https://sp-travel.example.com",
+      "redirectUris": [
+        "https://sp-travel.example.com/saml/acs/*"
+      ],
+      "frontchannelLogout": true,
+      "fullScopeAllowed": true,
+      "attributes": {
+        "saml.signature.algorithm": "RSA_SHA256",
+        "saml_name_id_format": "username",
+        "saml.client.signature": "false",
+        "saml.force.post.binding": "true",
+        "saml.server.signature": "true",
+        "saml_assertion_consumer_url_post": "https://sp-travel.example.com/saml/acs"
+      },
+      "protocolMappers": []
+    },
+    {
+      "clientId": "saml-archive",
+      "name": "Saml Archive",
+      "description": "SAML service provider for Saml Archive (fictitious)",
+      "enabled": true,
+      "protocol": "saml",
+      "rootUrl": "https://sp-archive.example.com",
+      "redirectUris": [
+        "https://sp-archive.example.com/saml/acs/*"
+      ],
+      "frontchannelLogout": true,
+      "fullScopeAllowed": true,
+      "attributes": {
+        "saml.signature.algorithm": "RSA_SHA256",
+        "saml_name_id_format": "username",
+        "saml.client.signature": "false",
+        "saml.force.post.binding": "true",
+        "saml.server.signature": "true",
+        "saml_assertion_consumer_url_post": "https://sp-archive.example.com/saml/acs"
+      },
+      "protocolMappers": []
+    },
+    {
+      "clientId": "legacy-portal",
+      "name": "Legacy Portal",
+      "description": "Legacy Portal (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://example.com*"
+      ],
+      "webOrigins": [],
+      "attributes": {},
+      "protocolMappers": [],
+      "secret": "26454d97e2ce287a2c475047f5a3039f",
+      "rootUrl": "https://example.com"
+    },
+    {
+      "clientId": "legacy-claims",
+      "name": "Legacy Claims",
+      "description": "Legacy Claims (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://legacy-claims.example.com*"
+      ],
+      "webOrigins": [],
+      "attributes": {},
+      "protocolMappers": [],
+      "secret": "009971b7d499f695aeb2f3358d8b3dfe",
+      "rootUrl": "https://legacy-claims.example.com"
+    },
+    {
+      "clientId": "legacy-reports",
+      "name": "Legacy Reports",
+      "description": "Legacy Reports (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://legacy-reports.example.com*"
+      ],
+      "webOrigins": [],
+      "attributes": {},
+      "protocolMappers": [],
+      "secret": "ad47b024702f313bf4c1641153c8c482",
+      "rootUrl": "https://legacy-reports.example.com"
+    },
+    {
+      "clientId": "legacy-api-orders",
+      "name": "Legacy Api Orders",
+      "description": "Legacy Api Orders (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": true,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [],
+      "webOrigins": [],
+      "attributes": {},
+      "protocolMappers": [],
+      "secret": "404ae029967429768cae16a953fb7125"
+    },
+    {
+      "clientId": "legacy-api-stock",
+      "name": "Legacy Api Stock",
+      "description": "Legacy Api Stock (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": true,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [],
+      "webOrigins": [],
+      "attributes": {},
+      "protocolMappers": [],
+      "secret": "5d63e4779d5735a58b317f010d9c86b9"
+    },
+    {
+      "clientId": "legacy-api-hr",
+      "name": "Legacy Api Hr",
+      "description": "Legacy Api Hr (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": true,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [],
+      "webOrigins": [],
+      "attributes": {},
+      "protocolMappers": [],
+      "secret": "59d1929f38939f2760bdb7e59bf36bec"
+    },
+    {
+      "clientId": "legacy-kiosk",
+      "name": "Legacy Kiosk",
+      "description": "Legacy Kiosk (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "bearerOnly": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [],
+      "webOrigins": [],
+      "attributes": {},
+      "protocolMappers": []
+    },
+    {
+      "clientId": "legacy-cli",
+      "name": "Legacy Cli",
+      "description": "Legacy Cli (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "bearerOnly": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [],
+      "webOrigins": [],
+      "attributes": {},
+      "protocolMappers": []
+    },
+    {
+      "clientId": "legacy-intranet",
+      "name": "Legacy Intranet",
+      "description": "Legacy Intranet (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "https://legacy-intranet.example.com/*"
+      ],
+      "webOrigins": [],
+      "attributes": {},
+      "protocolMappers": [],
+      "secret": "983bb0a79f1ba243646cc1c243fbf9f3",
+      "rootUrl": "https://legacy-intranet.example.com"
+    },
+    {
+      "clientId": "legacy-batch-ui",
+      "name": "Legacy Batch Ui",
+      "description": "Legacy Batch Ui (fictitious, generated for the POC)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "bearerOnly": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "fullScopeAllowed": true,
+      "redirectUris": [],
+      "webOrigins": [],
+      "attributes": {},
+      "protocolMappers": []
+    }
+  ]
+}

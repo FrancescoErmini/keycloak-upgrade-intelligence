@@ -1,0 +1,218 @@
+# Keycloak Breaking Change Impact Analyzer — POC environment
+#
+#   cp .env.example .env
+#   docker compose up -d --build                 # core stack
+#   docker compose --profile legacy up -d        # + Keycloak 25.x (pre-26.0 before/after)
+#   docker compose --profile tests run --rm test-runner
+#
+name: kc-upgrade-analyzer
+
+x-keycloak-env: &keycloak-env
+  KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_ADMIN_USER:-admin}
+  KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_ADMIN_PASSWORD:-admin}
+  KC_DB: postgres
+  KC_DB_USERNAME: keycloak
+  KC_DB_PASSWORD: ${POSTGRES_PASSWORD:-keycloak}
+  KC_HEALTH_ENABLED: "true"
+  KC_HTTP_ENABLED: "true"
+  KC_HOSTNAME_STRICT: "false"
+  # ECS JSON logs on console and file (the file is read by Pipeline C)
+  KC_LOG: console,file
+  KC_LOG_CONSOLE_OUTPUT: json
+  KC_LOG_CONSOLE_JSON_FORMAT: ecs
+  KC_LOG_FILE: /opt/keycloak/data/log/keycloak.log
+  KC_LOG_FILE_OUTPUT: json
+  KC_LOG_FILE_JSON_FORMAT: ecs
+  KC_LOG_LEVEL: INFO,org.keycloak.events:DEBUG
+  # HTTP access log + MDC (client attribution)
+  KC_HTTP_ACCESS_LOG_ENABLED: "true"
+  KC_HTTP_ACCESS_LOG_PATTERN: combined
+  KC_LOG_MDC_ENABLED: "true"
+  KC_LOG_MDC_KEYS: realmName,clientId,userId,ipAddress
+  KC_SPI_EVENTS_LISTENER_JBOSS_LOGGING_SUCCESS_LEVEL: info
+  KC_SPI_EVENTS_LISTENER_JBOSS_LOGGING_ERROR_LEVEL: warn
+
+x-keycloak-health: &keycloak-health
+  test: ["CMD", "bash", "/opt/healthcheck.sh"]
+  interval: 10s
+  timeout: 5s
+  retries: 30
+  start_period: 30s
+
+services:
+  # ------------------------------------------------------------------ databases
+  postgres-source:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-keycloak}
+    volumes: [pg-source:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U keycloak"]
+      interval: 5s
+      retries: 20
+
+  postgres-target:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-keycloak}
+    volumes: [pg-target:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U keycloak"]
+      interval: 5s
+      retries: 20
+
+  # Named volumes are created root-owned: hand the log directories to the keycloak user (uid 1000).
+  log-permissions:
+    image: busybox:1.36
+    command: ["sh", "-c", "chown -R 1000:0 /logs/source /logs/target /logs/legacy && chmod -R g+rwX /logs"]
+    volumes:
+      - kc-logs-source:/logs/source
+      - kc-logs-target:/logs/target
+      - kc-logs-legacy:/logs/legacy
+
+  # ------------------------------------------------------------------ keycloak
+  keycloak-source:
+    image: quay.io/keycloak/keycloak:${KC_SOURCE_VERSION:-26.5.0}
+    command: ["start-dev", "--import-realm"]
+    environment:
+      <<: *keycloak-env
+      KC_DB_URL: jdbc:postgresql://postgres-source:5432/keycloak
+    ports: ["8080:8080"]
+    volumes:
+      - ./data/realms/enterprise-realm.json:/opt/keycloak/data/import/enterprise-realm.json:ro
+      - ./docker/keycloak/healthcheck.sh:/opt/healthcheck.sh:ro
+      - kc-logs-source:/opt/keycloak/data/log
+    depends_on:
+      postgres-source: {condition: service_healthy}
+      log-permissions: {condition: service_completed_successfully}
+    healthcheck: *keycloak-health
+
+  keycloak-target:
+    image: quay.io/keycloak/keycloak:${KC_TARGET_VERSION:-26.6.3}
+    command: ["start-dev", "--import-realm"]
+    environment:
+      <<: *keycloak-env
+      KC_DB_URL: jdbc:postgresql://postgres-target:5432/keycloak
+    ports: ["8081:8080"]
+    volumes:
+      - ./data/realms/enterprise-realm.json:/opt/keycloak/data/import/enterprise-realm.json:ro
+      - ./docker/keycloak/healthcheck.sh:/opt/healthcheck.sh:ro
+      - kc-logs-target:/opt/keycloak/data/log
+    depends_on:
+      postgres-target: {condition: service_healthy}
+      log-permissions: {condition: service_completed_successfully}
+    healthcheck: *keycloak-health
+
+  # Pre-26.0 source, needed to observe the before/after of KC-BC-002/003/004.
+  keycloak-legacy:
+    profiles: [legacy]
+    image: quay.io/keycloak/keycloak:${KC_LEGACY_VERSION:-25.0.6}
+    command: ["start-dev", "--import-realm"]
+    environment:
+      KEYCLOAK_ADMIN: ${KC_ADMIN_USER:-admin}
+      KEYCLOAK_ADMIN_PASSWORD: ${KC_ADMIN_PASSWORD:-admin}
+      KC_HEALTH_ENABLED: "true"
+      KC_LOG: console,file
+      KC_LOG_CONSOLE_OUTPUT: json
+      KC_LOG_FILE: /opt/keycloak/data/log/keycloak.log
+      KC_LOG_FILE_OUTPUT: json
+      KC_SPI_LOGIN_PROTOCOL_OPENID_CONNECT_LEGACY_LOGOUT_REDIRECT_URI: "true"
+    ports: ["8082:8080"]
+    volumes:
+      - ./data/realms/enterprise-realm.json:/opt/keycloak/data/import/enterprise-realm.json:ro
+      - ./docker/keycloak/healthcheck.sh:/opt/healthcheck.sh:ro
+      - kc-logs-legacy:/opt/keycloak/data/log
+    depends_on:
+      log-permissions: {condition: service_completed_successfully}
+    healthcheck: *keycloak-health
+
+  # ------------------------------------------------------------------ elastic
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION:-8.15.3}
+    environment:
+      ES_JAVA_OPTS: ${ES_JAVA_OPTS:--Xms1g -Xmx1g}
+    volumes:
+      - ./docker/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+      - es-data:/usr/share/elasticsearch/data
+    ports: ["9200:9200"]
+    ulimits:
+      memlock: {soft: -1, hard: -1}
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=5s || exit 1"]
+      interval: 10s
+      retries: 30
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:${ELASTIC_VERSION:-8.15.3}
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    ports: ["5601:5601"]
+    depends_on:
+      elasticsearch: {condition: service_healthy}
+
+  # ------------------------------------------------------------------ application
+  backend:
+    build: {context: ., dockerfile: backend/Dockerfile}
+    environment:
+      STORE_BACKEND: elasticsearch
+      ES_URL: http://elasticsearch:9200
+      KEYCLOAK_LOG_DIR: /runtime-logs
+      KC_SOURCE_VERSION: ${KC_SOURCE_VERSION:-26.5.0}
+      KC_TARGET_VERSION: ${KC_TARGET_VERSION:-26.6.3}
+      KC_LEGACY_VERSION: ${KC_LEGACY_VERSION:-25.0.6}
+      EMBEDDING_BACKEND: ${EMBEDDING_BACKEND:-hash}
+      LLM_PROVIDER: ${LLM_PROVIDER:-none}
+      OLLAMA_URL: ${OLLAMA_URL:-http://ollama:11434}
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-llama3.1:8b}
+      AUTO_BOOTSTRAP: ${AUTO_BOOTSTRAP:-true}
+      BC_SOURCE_URL: ${BC_SOURCE_URL:-}
+    ports: ["8000:8000"]
+    volumes:
+      - ./data:/srv/data:ro
+      - kc-logs-source:/runtime-logs/source:ro
+      - kc-logs-target:/runtime-logs/target:ro
+      - kc-logs-legacy:/runtime-logs/legacy:ro
+    depends_on:
+      elasticsearch: {condition: service_healthy}
+
+  frontend:
+    build: {context: ./frontend}
+    ports: ["3000:80"]
+    depends_on:
+      backend: {condition: service_healthy}
+
+  # ------------------------------------------------------------------ tests
+  test-runner:
+    profiles: [tests]
+    build: {context: ., dockerfile: backend/Dockerfile}
+    working_dir: /srv
+    command: ["python", "-m", "pytest", "tests", "-v"]
+    environment:
+      ES_URL: http://elasticsearch:9200
+      BACKEND_URL: http://backend:8000
+      KC_SOURCE_URL: http://keycloak-source:8080
+      KC_TARGET_URL: http://keycloak-target:8080
+      KC_LEGACY_URL: ${KC_LEGACY_URL:-}
+      KC_SOURCE_VERSION: ${KC_SOURCE_VERSION:-26.5.0}
+      KC_TARGET_VERSION: ${KC_TARGET_VERSION:-26.6.3}
+      KC_ADMIN_USER: ${KC_ADMIN_USER:-admin}
+      KC_ADMIN_PASSWORD: ${KC_ADMIN_PASSWORD:-admin}
+      EVIDENCE_DIR: /evidence
+    volumes:
+      - ./tests/.evidence:/evidence
+    depends_on:
+      keycloak-source: {condition: service_healthy}
+      keycloak-target: {condition: service_healthy}
+      backend: {condition: service_healthy}
+
+volumes:
+  pg-source:
+  pg-target:
+  es-data:
+  kc-logs-source:
+  kc-logs-target:
+  kc-logs-legacy:
