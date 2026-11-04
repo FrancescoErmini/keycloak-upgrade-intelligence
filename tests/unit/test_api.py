@@ -9,7 +9,7 @@ def test_end_to_end_api(settings):
     with TestClient(app) as c:
         assert c.get("/api/health").json()["status"] == "ok"
         boot = c.post("/api/bootstrap").json()
-        assert len(boot["assessments"]) == 3
+        assert len(boot["assessments"]) == 4
         r = c.post("/api/assessments", json={"source_version": "26.5.0", "target_version": "26.6.3",
                                              "log_origins": ["synthetic-fixture"]})
         assert r.status_code == 200

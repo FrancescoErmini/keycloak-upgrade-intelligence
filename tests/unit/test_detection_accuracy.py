@@ -4,7 +4,7 @@ import pytest
 from app.detection.analyzers import redirect_matches, run_assessment
 from app.store import FINDINGS
 
-SCENARIOS = ["s-26.5-to-26.6.3", "s-25.0-to-26.6.3", "s-26.3-to-26.5"]
+SCENARIOS = ["s-26.5-to-26.6.3", "s-22.0-to-26.6.3", "s-25.0-to-26.6.3", "s-26.3-to-26.5"]
 
 
 def _findings(store, summary):

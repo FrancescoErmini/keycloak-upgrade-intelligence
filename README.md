@@ -58,7 +58,8 @@ python -m app.cli assess 26.5.0 26.6.3 --origin keycloak-runtime
 | `test-runner` | pytest: traffico OIDC reale + validation suite |
 
 ## Pipeline
-- **A, Breaking changes** (`backend/app/ingestion/breaking_changes.py`): parsing della guida, chunk + embeddings locali, regole dal manifest validate contro il testo; LLM locale opzionale (`LLM_PROVIDER=ollama`) solo per *proporre* regole `candidate`.
+- **Sync manuale della guida ufficiale** (`backend/app/jobs/sync_breaking_changes.py`): scarica la pagina, la serializza in `data/breaking-changes/catalog.json` (indice versioni *da → a*, categorie breaking / notable / deprecated / removed / end-of-life, voci), e usa OpenAI per mappare ogni voce su un **registro chiuso di detector** → regole `candidate`. Vedi [docs/breaking-changes-sync.md](docs/breaking-changes-sync.md).
+- **A, Breaking changes** (`backend/app/ingestion/breaking_changes.py`): indicizza catalogo + regole approvate/candidate; nessuna rete, nessun LLM.
 - **B, Realm** (`ingestion/realms.py`): deterministica.
 - **C, Log** (`ingestion/logs.py`): deterministica; `client_id = extracted_client_id or "anonymous"` + `client_identified`.
 
@@ -71,10 +72,18 @@ La detection esegue solo regole `approved` e non richiede un LLM.
 | KC-BC-001 | wildcard nell'host dei redirect URI | 26.6.3 | realm JSON + test OIDC | high |
 | KC-BC-002 | `redirect_uri` sul logout | 26.0.0 | access log | critical |
 | KC-BC-003 | path HTTP non normalizzati | 26.4.3 | access log + status | high |
-| KC-BC-004 | role mapper non multivalore | 26.0.0 | realm JSON + token | high |
+| KC-BC-004 | role mapper single-valued: ora emettono un singolo valore | 23.0.0 | realm JSON + token | high |
 | KC-BC-005 | chiamate non attribuibili (controllo) | — | runtime log `anonymous` | info |
 
-> ⚠️ La documentazione in `data/breaking-changes/` è un **estratto curato** che parafrasa la guida ufficiale, e la matrice dei test live deriva dal report tecnico: entrambe sono marcate come da verificare (`verified_against_official_docs`, `matrix_verified`).
+Le quattro regole approvate (`data/breaking-changes/rules/approved-rules.json`) citano verbatim le voci della guida ufficiale; tutte le altre voci della guida sono indicizzate per il RAG e, dopo il sync con LLM, diventano regole `candidate` da revisionare.
+
+### Sync della guida (job manuale)
+
+```bash
+echo "OPENAI_API_KEY=sk-..." >> .env
+docker compose --profile jobs run --rm bc-sync              # download → JSON → LLM → indice
+docker compose --profile jobs run --rm bc-sync --dry-run    # solo download + parse + diff
+```
 
 ## Dataset
 `data/` è generato in modo deterministico da `scripts/generate_dataset.py` (seed fisso) ed è versionato. I log in `data/logs` sono **fixture sintetiche** (`labels.origin = synthetic-fixture`) e non vengono mai presentati come evidenza prodotta dal server; i log reali dei container hanno `labels.origin = keycloak-runtime`.
@@ -82,6 +91,7 @@ La detection esegue solo regole `approved` e non richiede un LLM.
 ## Documentazione
 - [Architettura](docs/architecture.md)
 - [Valutazione e criteri di accettazione](docs/evaluation.md)
+- [Sync delle breaking changes e coerenza delle label LLM](docs/breaking-changes-sync.md)
 - [ADR](docs/adr/)
 
 Tutti i dati (client, team, utenti, contatti) sono fittizi.

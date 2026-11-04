@@ -94,7 +94,12 @@ def test_role_mapper_multivalued(instance, scenarios, evidence):
     assert r.status_code == 200, r.text
     claims = _jwt_claims(r.json()["access_token"])
     value = claims.get(t["request"]["claim"])
-    outcome = "array" if isinstance(value, list) else "string" if isinstance(value, str) else f"unexpected:{type(value).__name__}"
+    if isinstance(value, list):
+        outcome = "array"
+    elif isinstance(value, str):
+        outcome = "stringified-array" if value.lstrip().startswith("[") else "single-value"
+    else:
+        outcome = f"unexpected:{type(value).__name__}"
     exp = expected_outcome(t, instance["version"])
     evidence(bc_id=t["bc_id"], client_id=t["client_id"], instance=instance,
              request={"method": "POST", "url": url, "grant_type": "client_credentials"},

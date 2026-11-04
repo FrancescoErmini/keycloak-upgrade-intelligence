@@ -3,30 +3,30 @@ from __future__ import annotations
 
 import json
 
-ALLOWED_FIELDS_HINT = (
-    "client fields: client_id, protocol, client_type, enabled, public_client, bearer_only, grant_types, "
-    "redirect_uris, post_logout_redirect_uris, web_origins, root_url, protocol_mappers[type,multivalued,claim_name]; "
-    "log fields: url.path, url.query, http.request.method, http.response.status_code, event.action, client_id, client_identified"
-)
+PROMPT_VERSION = "2026-11-04.1"
+
+RULE_SYSTEM = """You classify one entry of the Keycloak Upgrading Guide and map it onto a CLOSED registry of detectors.
+You never write regular expressions, field names or labels: you only choose a detector id from the registry and fill
+its parameters with the allowed values. Rules:
+1. Use only the entry text. Never invent endpoints, parameters, options or versions.
+2. "source_quote" must be ONE sentence copied verbatim (character by character) from the entry text.
+3. If the change cannot be observed in a client configuration (realm export) or in HTTP access logs / Keycloak events
+   (e.g. SPI/Java API, operator, database, theme, server option changes), use detector "none" and decision
+   "not_detectable" (or "not_client_impacting" when no application is affected).
+4. If the change is detectable but no detector fits, use detector "none", decision "not_detectable" and describe
+   the missing detector in "proposed_detector" (short snake_case name). Never stretch a detector to fit.
+5. Parameters not used by the chosen detector must be null. Identifier parameters (param, attribute, event_type) must
+   appear literally in the entry text.
+6. Same kind of change => same detector and same parameters: follow the examples."""
 
 
-def rule_extraction(section: dict) -> str:
-    return f"""You convert one section of the Keycloak upgrading guide into a JSON detection rule.
-Use ONLY information present in the section. Do not invent endpoints, parameters or versions.
-Return a JSON object with keys: title, category, introduced_in, severity (critical|high|medium|low|info),
-source_quote (a sentence copied VERBATIM from the section), evidence_terms (words copied from the section),
-detection (object with optional "static" {{target:"client", condition}} and "runtime" {{mode:"detect"|"corroborate", condition}}),
-remediation.
-A condition is {{"all":[...]}}, {{"any":[...]}}, {{"not":cond}} or {{"field","op","value"}} with op in
-eq, ne, in, regex, any_regex, exists, contains, has_param, any_item (with "where").
-Allowed fields -> {ALLOWED_FIELDS_HINT}.
-If the section cannot be turned into a rule, return {{"skip": true}}.
-
-Section version: {section.get('version')}
-Section title: {section.get('title')}
-Section text:
-\"\"\"{section.get('text')}\"\"\"
-"""
+def rule_user_message(entry: dict, registry: list[dict], examples: list[dict]) -> str:
+    return json.dumps({
+        "detector_registry": registry,
+        "examples": examples,
+        "entry": {"version": entry["version"], "from_version": entry.get("from_version"),
+                  "category_in_guide": entry["category"], "title": entry["title"], "text": entry["text"][:6000]},
+    }, ensure_ascii=False)
 
 
 def explanation(finding: dict, passages: list[dict]) -> str:

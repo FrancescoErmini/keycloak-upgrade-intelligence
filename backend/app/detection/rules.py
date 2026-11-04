@@ -1,6 +1,6 @@
 """Rule model: condition evaluation and grounding validation.
 
-A rule is a JSON document (see data/breaking-changes/breaking-changes-manifest.json).
+Rules are built from the detector registry (detectors.py) and indexed in kc-bc-rules.
 Conditions form a tiny, closed DSL so that a rule proposed by an LLM can only
 refer to fields and operators that the analyzers actually know about.
 """
@@ -98,10 +98,6 @@ def matching_values(cond: dict, doc: dict) -> list[Any]:
 # ------------------------------------------------------------------------------------------
 # Grounding validation
 # ------------------------------------------------------------------------------------------
-def _norm(text: str) -> str:
-    return re.sub(r"\s+", " ", text or "").strip().lower()
-
-
 def _walk(cond: dict, scope: str, errors: list[str], params: list[str]) -> None:
     if not isinstance(cond, dict):
         errors.append("condition must be an object")
@@ -122,7 +118,7 @@ def _walk(cond: dict, scope: str, errors: list[str], params: list[str]) -> None:
         errors.append(f"unknown operator {op!r}")
         return
     allowed = {"client": CLIENT_FIELDS, "log": LOG_FIELDS, "mapper": MAPPER_FIELDS, "redirect": REDIRECT_FIELDS}[scope]
-    if field not in allowed:
+    if field not in allowed and not (scope == "client" and str(field).startswith("attributes.")):
         errors.append(f"field {field!r} is not allowed in {scope} conditions")
     if op in ("regex", "any_regex"):
         try:
@@ -139,15 +135,14 @@ def _walk(cond: dict, scope: str, errors: list[str], params: list[str]) -> None:
             _walk(cond["where"], sub, errors, params)
 
 
-def validate_rule(rule: dict, sections: dict[str, dict]) -> list[str]:
-    """Return a list of problems; an empty list means the rule is grounded and executable.
+def validate_rule(rule: dict) -> list[str]:
+    """Structural validation of an indexed rule document (compiled detection must use the DSL).
 
-    Checks: schema, version, severity, that the cited passage exists verbatim in the
-    referenced documentation section, that evidence terms and query parameters used by
-    the rule appear in that section, and that conditions only use known fields/operators.
+    Grounding against the documentation is checked earlier, when the rule spec is built
+    (ingestion.rule_extraction.validate_spec).
     """
     errors: list[str] = []
-    for key in ("bc_id", "title", "kind", "category", "severity", "detection", "remediation"):
+    for key in ("bc_id", "title", "kind", "category", "severity", "remediation"):
         if not rule.get(key):
             errors.append(f"missing field {key!r}")
     if errors:
@@ -156,11 +151,12 @@ def validate_rule(rule: dict, sections: dict[str, dict]) -> list[str]:
         errors.append(f"invalid kind {rule['kind']!r}")
     if rule["severity"] not in SEVERITIES:
         errors.append(f"invalid severity {rule['severity']!r}")
-
+    if rule["kind"] == "breaking-change" and parse_version(rule.get("introduced_in")) is None:
+        errors.append(f"invalid introduced_in {rule.get('introduced_in')!r}")
+    detection = rule.get("detection")
+    if not detection:
+        return errors  # not detectable: documented, never executed
     params: list[str] = []
-    detection = rule["detection"]
-    if not detection.get("static") and not detection.get("runtime"):
-        errors.append("detection needs a static and/or runtime part")
     if detection.get("static"):
         if detection["static"].get("target") != "client":
             errors.append("static.target must be 'client'")
@@ -171,29 +167,6 @@ def validate_rule(rule: dict, sections: dict[str, dict]) -> list[str]:
         if detection["runtime"].get("mode") == "corroborate" and not detection.get("static"):
             errors.append("a 'corroborate' runtime part requires a static part")
         _walk(detection["runtime"].get("condition", {}), "log", errors, params)
-
-    if rule["kind"] == "control":
-        return errors
-
-    # ---- grounding in the source documentation ----
-    if parse_version(rule.get("introduced_in")) is None:
-        errors.append(f"invalid introduced_in {rule.get('introduced_in')!r}")
-    section = sections.get(rule.get("section_anchor") or "")
-    if section is None:
-        errors.append(f"section {rule.get('section_anchor')!r} not found in the source document")
-        return errors
-    text = _norm(section["text"])
-    if not rule.get("source_quote") or _norm(rule["source_quote"]) not in text:
-        errors.append("source_quote is not a verbatim passage of the cited section")
-    for term in rule.get("evidence_terms", []):
-        if _norm(term) not in text:
-            errors.append(f"evidence term {term!r} does not appear in the cited section")
-    for p in params:
-        if _norm(p) not in text:
-            errors.append(f"query parameter {p!r} is not mentioned in the cited section")
-    sv = parse_version(section.get("version"))
-    if sv is not None and parse_version(rule.get("introduced_in")) not in (None, sv):
-        errors.append(f"introduced_in {rule['introduced_in']} differs from section version {section['version']}")
     return errors
 
 

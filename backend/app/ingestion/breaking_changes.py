@@ -1,183 +1,183 @@
-"""Pipeline A — Breaking Changes ingestion (the only pipeline that may use an LLM).
+"""Pipeline A — Breaking Changes ingestion into Elasticsearch.
 
-1. Read the upgrading guide (local file, or the official URL when BC_SOURCE_URL is set).
-2. Split it into sections (Asciidoctor structure) and paragraph-aligned chunks.
-3. Embed chunks locally and index them in kc-bc-knowledge (original text is always kept).
-4. Load the curated rules from the manifest, validate their grounding and index them
-   in kc-bc-rules as `approved`.
-5. Optionally ask an LLM to propose rules for sections without a curated rule; proposals
-   are validated and stored as `candidate` (never used by detection until approved).
+Input (produced by the manual sync job `python -m app.jobs.sync_breaking_changes`):
+  data/breaking-changes/catalog.json                 entries parsed from the official HTML
+  data/breaking-changes/rules/approved-rules.json    human-approved rules + controls
+  data/breaking-changes/rules/llm-candidates.json   LLM proposals (never executed)
+
+This step makes no network call and no LLM call: it indexes every catalog entry in
+kc-bc-knowledge (original text + local embedding, with version/category metadata) and
+the rules in kc-bc-rules. Only `approved` rules are executed by the detection engine.
 """
 from __future__ import annotations
 
 import json
-import re
 from datetime import datetime, timezone
 from pathlib import Path
 
-import requests
-from bs4 import BeautifulSoup, Tag
-
+from ..detection.detectors import CATEGORY_LABELS, DETECTORS, compile_detection
 from ..detection.rules import validate_rule
-from ..llm.providers import LLMProvider, NoLLM
 from ..rag.embeddings import get_embedder
 from ..store import KNOWLEDGE, RULES, Store
 from ..utils import stable_id
+from .rule_extraction import validate_spec
 
-_VERSION = re.compile(r"(\d+\.\d+\.\d+)")
-CHUNK_CHARS = 900
+DOC_ID = "keycloak-upgrading-guide"
+CHUNK_CHARS = 1500
 
 
 def now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
-def load_html(data_dir: Path, manifest: dict, source_url: str = "") -> tuple[str, str]:
-    if source_url:
-        r = requests.get(source_url, timeout=30)
-        r.raise_for_status()
-        return r.text, source_url
-    path = data_dir / "breaking-changes" / manifest["source"]["file"]
-    return path.read_text(encoding="utf-8"), manifest["source"]["url"]
+def bc_dir(data_dir: Path) -> Path:
+    return data_dir / "breaking-changes"
 
 
-def parse_sections(html: str) -> list[dict]:
-    """Return [{anchor, title, version, level, text, paragraphs}] for every h2-h4 with an id."""
-    soup = BeautifulSoup(html, "html.parser")
-    sections: list[dict] = []
-    current_version: str | None = None
-    for h in soup.find_all(["h2", "h3", "h4"]):
-        if h.name == "h2":
-            m = _VERSION.search(h.get_text(" ", strip=True))
-            current_version = m.group(1) if m else current_version
-        if not h.get("id"):
-            continue
-        paragraphs: list[str] = []
-        for sib in h.next_siblings:
-            if not isinstance(sib, Tag):
-                continue
-            if sib.name in ("h1", "h2", "h3", "h4") or sib.find(["h2", "h3", "h4"]):
-                break
-            txt = re.sub(r"\s+", " ", sib.get_text(" ", strip=True)).strip()
-            if txt:
-                paragraphs.append(txt)
-        if not paragraphs:
-            continue
-        sections.append({
-            "anchor": h["id"],
-            "title": h.get_text(" ", strip=True),
-            "version": current_version,
-            "level": int(h.name[1]),
-            "paragraphs": paragraphs,
-            "text": "\n".join(paragraphs),
-        })
-    return sections
+def load_json(path: Path, default=None):
+    return json.loads(path.read_text(encoding="utf-8")) if path.exists() else default
 
 
-def chunk_section(section: dict, max_chars: int = CHUNK_CHARS) -> list[str]:
+def load_catalog(data_dir: Path) -> dict:
+    cat = load_json(bc_dir(data_dir) / "catalog.json")
+    if cat is None:
+        raise FileNotFoundError("catalog.json missing: run `python -m app.jobs.sync_breaking_changes` first")
+    return cat
+
+
+def load_approved(data_dir: Path) -> dict:
+    return load_json(bc_dir(data_dir) / "rules" / "approved-rules.json", {"rules": [], "controls": []})
+
+
+def load_candidates(data_dir: Path) -> dict[str, dict]:
+    return load_json(bc_dir(data_dir) / "rules" / "llm-candidates.json", {"candidates": {}})["candidates"]
+
+
+def chunk_text(text: str, max_chars: int = CHUNK_CHARS) -> list[str]:
     chunks, cur = [], ""
-    for p in section["paragraphs"]:
+    for p in text.split("\n"):
         if cur and len(cur) + len(p) + 1 > max_chars:
             chunks.append(cur)
             cur = p
         else:
             cur = f"{cur}\n{p}" if cur else p
-    if cur:
-        chunks.append(cur)
-    return chunks
+    return chunks + ([cur] if cur else []) or [""]
 
 
-def load_manifest(data_dir: Path) -> dict:
-    return json.loads((data_dir / "breaking-changes" / "breaking-changes-manifest.json").read_text(encoding="utf-8"))
-
-
-def ingest_breaking_changes(store: Store, settings, llm: LLMProvider | None = None) -> dict:
-    llm = llm or NoLLM()
-    manifest = load_manifest(settings.data_dir)
-    html, source_url = load_html(settings.data_dir, manifest, settings.bc_source_url)
-    doc_id = manifest["source"]["doc_id"]
-    sections = parse_sections(html)
-    by_anchor = {s["anchor"]: s for s in sections}
-    anchor_to_bc: dict[str, list[str]] = {}
-    for r in manifest["rules"]:
-        if r.get("section_anchor"):
-            anchor_to_bc.setdefault(r["section_anchor"], []).append(r["bc_id"])
-
-    # ---- knowledge chunks (idempotent: deterministic ids + replace per source doc) ----
-    embedder = get_embedder(settings.embedding_backend, settings.embedding_dim, settings.embedding_model)
-    chunks = []
-    for s in sections:
-        for pos, text in enumerate(chunk_section(s)):
-            cid = stable_id(doc_id, s["anchor"], pos, text)
-            chunks.append((cid, {
-                "chunk_id": cid,
-                "doc_id": doc_id,
-                "source_url": f"{source_url}#{s['anchor']}",
-                "section_anchor": s["anchor"],
-                "section_title": s["title"],
-                "version": s["version"],
-                "position": pos,
-                "bc_ids": anchor_to_bc.get(s["anchor"], []),
-                "text": text,
-                "content_hash": stable_id(text, length=40),
-                "embedding_model": embedder.name,
-                "embedding": embedder.embed(f"{s['title']}\n{text}"),
-                "ingested_at": now(),
-            }))
-    store.delete(KNOWLEDGE, {"doc_id": doc_id})
-    store.upsert_many(KNOWLEDGE, chunks)
-
-    # ---- curated rules ----
-    rule_docs, rejected = [], []
-    for rule in manifest["rules"]:
-        errors = validate_rule(rule, by_anchor)
-        if errors:
-            rejected.append({"bc_id": rule.get("bc_id"), "origin": "manifest", "errors": errors})
-            continue
-        rule_docs.append((rule["bc_id"], _rule_doc(rule, source_url, "manifest", rule.get("status", "approved"))))
-
-    # ---- optional LLM proposals for sections without curated rules ----
-    candidates = 0
-    if llm.available():
-        for s in sections:
-            if s["anchor"] in anchor_to_bc:
-                continue
-            proposal = llm.extract_rule(s)
-            if not proposal or proposal.get("skip"):
-                continue
-            proposal.update(bc_id=f"KC-BC-CAND-{stable_id(s['anchor'], length=8)}", kind="breaking-change",
-                            section_anchor=s["anchor"])
-            proposal.setdefault("introduced_in", s["version"])
-            errors = validate_rule(proposal, by_anchor)
-            if errors:
-                rejected.append({"bc_id": proposal["bc_id"], "origin": f"llm:{llm.name}", "errors": errors})
-                continue
-            rule_docs.append((proposal["bc_id"], _rule_doc(proposal, source_url, f"llm:{llm.name}", "candidate")))
-            candidates += 1
-
-    store.upsert_many(RULES, rule_docs)
+def build_rule_doc(spec: dict, entry: dict, origin: str, status: str) -> dict:
+    """Merge a (validated) rule spec with its catalog entry and the detector registry."""
+    det = DETECTORS[spec["detector"]]
+    detection = compile_detection(spec["detector"], spec["params"])
     return {
-        "doc_id": doc_id,
-        "source_url": source_url,
-        "sections": len(sections),
-        "chunks": len(chunks),
-        "rules_indexed": len(rule_docs),
-        "llm_candidates": candidates,
-        "rejected": rejected,
+        "bc_id": spec["bc_id"],
+        "entry_id": entry["entry_id"],
+        "title": entry["title"],
+        "kind": "breaking-change",
+        "change_type": spec["change_type"],
+        "impact_area": spec.get("impact_area"),
+        # finding category and labels come from the registry, never from free LLM text
+        "category": det.category,
+        "category_label": det.category_label,
+        "detector": det.id,
+        "detector_label": det.label,
+        "detector_params": spec["params"],
+        "fingerprint": spec["fingerprint"],
+        "introduced_in": entry["version"],
+        "from_version": entry.get("from_version"),
+        "severity": spec["severity"],
+        "section_anchor": entry.get("anchor"),
+        "source_url": entry.get("url"),
+        "source_quote": spec["source_quote"],
+        "evidence_terms": [],
+        "detection": detection,
+        "remediation": spec.get("remediation") or "",
+        "rationale": spec.get("rationale"),
+        "testability": spec.get("testability"),
+        "status": status if detection else "not-detectable",
+        "origin": origin,
+        "review": spec.get("review") or {"approved_by": None},
+        "validation": {"grounded": True, "validated_at": now()},
+        "rule_hash": stable_id(spec["fingerprint"], entry["content_hash"], spec["severity"], length=40),
+        "ingested_at": now(),
     }
 
 
-def _rule_doc(rule: dict, source_url: str, origin: str, status: str) -> dict:
-    keys = ("bc_id", "title", "kind", "category", "category_label", "introduced_in", "severity", "section_anchor",
-            "source_quote", "evidence_terms", "detection", "remediation", "testability", "review")
-    doc = {k: rule.get(k) for k in keys}
-    doc.update(
-        source_url=f"{source_url}#{rule['section_anchor']}" if rule.get("section_anchor") else None,
-        status=status,
-        origin=origin,
-        validation={"grounded": True, "validated_at": now()},
-        rule_hash=stable_id({k: rule.get(k) for k in keys}, length=40),
-        ingested_at=now(),
-    )
-    doc["category_label"] = doc["category_label"] or doc["category"]
-    return doc
+def build_control_doc(ctrl: dict) -> dict:
+    return {
+        "bc_id": ctrl["bc_id"], "entry_id": None, "title": ctrl["title"], "kind": "control", "change_type": None,
+        "impact_area": None, "category": ctrl["category"], "category_label": CATEGORY_LABELS[ctrl["category"]],
+        "detector": None, "detector_label": None, "detector_params": None, "fingerprint": None,
+        "introduced_in": None, "from_version": None, "severity": ctrl["severity"], "section_anchor": None,
+        "source_url": None, "source_quote": None, "evidence_terms": [], "detection": ctrl["detection"],
+        "remediation": ctrl["remediation"], "rationale": None, "testability": ctrl.get("testability"),
+        "status": "approved", "origin": "approved-rules", "review": {"approved_by": "poc-curator"},
+        "validation": {"grounded": None, "validated_at": now()}, "rule_hash": stable_id(ctrl, length=40),
+        "ingested_at": now(),
+    }
+
+
+def build_rules(catalog: dict, approved: dict, candidates: dict[str, dict]) -> tuple[list[dict], list[dict]]:
+    entries = {e["entry_id"]: e for e in catalog["entries"]}
+    docs, rejected = [], []
+    approved_entries = set()
+    for spec in approved.get("rules", []):
+        entry = entries.get(spec["entry_id"])
+        if entry is None:
+            rejected.append({"bc_id": spec["bc_id"], "origin": "approved-rules",
+                             "errors": [f"entry {spec['entry_id']!r} not in catalog (renamed or removed upstream?)"]})
+            continue
+        canon, errors = validate_spec({"decision": "rule", **spec}, entry)
+        if errors:
+            rejected.append({"bc_id": spec["bc_id"], "origin": "approved-rules", "errors": errors})
+            continue
+        approved_entries.add(entry["entry_id"])
+        docs.append(build_rule_doc({**spec, **canon}, entry, "approved-rules", "approved"))
+    for c in candidates.values():
+        if c.get("status") != "candidate" or c["entry_id"] in approved_entries or c["entry_id"] not in entries:
+            continue
+        docs.append(build_rule_doc(c, entries[c["entry_id"]], c.get("model", "llm"), "candidate"))
+    docs += [build_control_doc(c) for c in approved.get("controls", [])]
+    for d in docs:
+        errs = validate_rule(d)
+        if errs:
+            raise ValueError(f"rule {d['bc_id']} failed structural validation: {errs}")
+    return docs, rejected
+
+
+def ingest_breaking_changes(store: Store, settings, llm=None) -> dict:  # llm kept for API compatibility
+    catalog = load_catalog(settings.data_dir)
+    rule_docs, rejected = build_rules(catalog, load_approved(settings.data_dir), load_candidates(settings.data_dir))
+    bc_by_entry: dict[str, list[str]] = {}
+    for r in rule_docs:
+        if r.get("entry_id"):
+            bc_by_entry.setdefault(r["entry_id"], []).append(r["bc_id"])
+
+    embedder = get_embedder(settings.embedding_backend, settings.embedding_dim, settings.embedding_model)
+    chunks = []
+    for e in catalog["entries"]:
+        for pos, text in enumerate(chunk_text(e["text"])):
+            cid = stable_id(DOC_ID, e["entry_id"], pos, text)
+            chunks.append((cid, {
+                "chunk_id": cid, "doc_id": DOC_ID, "entry_id": e["entry_id"], "source_url": e["url"],
+                "section_anchor": e["anchor"], "section_title": e["title"], "version": e["version"],
+                "from_version": e.get("from_version"), "change_type": e["category"], "position": pos,
+                "bc_ids": bc_by_entry.get(e["entry_id"], []), "text": text, "content_hash": e["content_hash"],
+                "embedding_model": embedder.name,
+                "embedding": embedder.embed(f"{e['title']}\n{text}"),
+                "ingested_at": now(),
+            }))
+    store.delete(KNOWLEDGE, {"doc_id": DOC_ID})
+    store.upsert_many(KNOWLEDGE, chunks)
+    store.delete(RULES, None)
+    store.upsert_many(RULES, [(r["bc_id"], r) for r in rule_docs])
+    return {
+        "doc_id": DOC_ID,
+        "source_url": catalog["source_url"],
+        "catalog_fetched_at": catalog["fetched_at"],
+        "versions": catalog["stats"]["versions"],
+        "entries": catalog["stats"]["entries"],
+        "chunks": len(chunks),
+        "rules_indexed": len(rule_docs),
+        "rules_by_status": {s: sum(1 for r in rule_docs if r["status"] == s) for s in {r["status"] for r in rule_docs}},
+        "rejected": rejected,
+    }

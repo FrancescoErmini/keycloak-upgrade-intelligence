@@ -1,0 +1,77 @@
+{
+  "schema_version": "2.0",
+  "notice": "Human-approved rules. They reference catalog entries (catalog.json, parsed from the official Upgrading Guide) by entry_id; title, version, anchor and URL come from the catalog. Detection is expressed only as detector + params from backend/app/detection/detectors.py. Approved rules always take precedence over LLM candidates for the same entry.",
+  "rules": [
+    {
+      "bc_id": "KC-BC-001",
+      "entry_id": "kc-26.6.3-breaking-valid-redirect-uris-for-clients-do-not-accept-wildcards-for-hostname-anymore",
+      "detector": "client.redirect_uri.hostname_wildcard",
+      "params": {},
+      "change_type": "breaking",
+      "impact_area": "redirect-uri-validation",
+      "severity": "high",
+      "source_quote": "Since this release, the hostname does not accept such type of wildcard and those patterns will be managed as if the wildcard is after the hostname https://example.com/*.",
+      "remediation": "Replace every valid redirect URI with a wildcard right after the host (e.g. https://example.com*) with an explicit host followed by a path (e.g. https://example.com/*), register other hosts explicitly, and prefer exact redirect URIs.",
+      "testability": {"observable_from_source_below": "26.6.3", "live_test": "redirect-wildcard"},
+      "review": {"approved_by": "poc-curator", "verified_against_official_docs": true}
+    },
+    {
+      "bc_id": "KC-BC-002",
+      "entry_id": "kc-26.0.0-uncategorized-support-for-legacy-redirect-uri-parameter-and-spi-options-has-been-removed",
+      "detector": "http.endpoint.query_param",
+      "params": {"endpoint": "oidc-logout", "param": "redirect_uri"},
+      "change_type": "removed",
+      "impact_area": "http-endpoints",
+      "severity": "critical",
+      "source_quote": "This functionality was deprecated in Keycloak 18 and has been removed in this version in favor of following the OpenID Connect specification.",
+      "remediation": "Implement OpenID Connect RP-Initiated Logout: send post_logout_redirect_uri together with id_token_hint (or client_id) and register the URI in 'Valid post logout redirect URIs'.",
+      "testability": {"observable_from_source_below": "26.0.0", "live_test": "legacy-logout"},
+      "review": {"approved_by": "poc-curator", "verified_against_official_docs": true}
+    },
+    {
+      "bc_id": "KC-BC-003",
+      "entry_id": "kc-26.4.3-breaking-accepting-only-normalized-paths-in-requests",
+      "detector": "http.path.non_normalized",
+      "params": {},
+      "change_type": "breaking",
+      "impact_area": "http-endpoints",
+      "severity": "high",
+      "source_quote": "As this has led to a hard-to-configure URL filtering, for example, in reverse proxies, the normalization is now disabled, and Keycloak responds with an HTTP 400 response code.",
+      "remediation": "Normalize request URLs in client libraries and reverse proxies (collapse '//' and resolve dot segments). The option http-accept-non-normalized-paths=true restores the old behaviour only temporarily: it is deprecated.",
+      "testability": {"observable_from_source_below": "26.4.3", "live_test": "non-normalized-path"},
+      "review": {"approved_by": "poc-curator", "verified_against_official_docs": true}
+    },
+    {
+      "bc_id": "KC-BC-004",
+      "entry_id": "kc-23.0.0-uncategorized-changes-to-the-value-format-of-claims-mapped-by-the-realm-and-client-role-mappers",
+      "detector": "client.protocol_mapper.single_valued",
+      "params": {"mapper_types": ["oidc-usermodel-client-role-mapper", "oidc-usermodel-realm-role-mapper"]},
+      "change_type": "breaking",
+      "impact_area": "protocol-token-mapping",
+      "severity": "high",
+      "source_quote": "In this release, the role and client mappers now map to a single value from the effective roles of a user when they are marked as single-valued (Multivalued disabled).",
+      "remediation": "If consumers expect all roles, enable 'Multivalued' on the role mapper and read the claim as a JSON array; otherwise update consumers that parsed the former stringified JSON array, which now receive a single role value.",
+      "testability": {"observable_from_source_below": "23.0.0", "live_test": "role-mapper-multivalued"},
+      "review": {"approved_by": "poc-curator", "verified_against_official_docs": true}
+    }
+  ],
+  "controls": [
+    {
+      "bc_id": "KC-BC-005",
+      "title": "Calls on monitored endpoints not attributable to a client",
+      "category": "unattributed-calls",
+      "severity": "info",
+      "detection": {
+        "runtime": {
+          "mode": "aggregate",
+          "condition": {"all": [
+            {"field": "client_identified", "op": "eq", "value": false},
+            {"field": "url.path", "op": "regex", "value": "^/realms/"}
+          ]}
+        }
+      },
+      "remediation": "Enable MDC (log-mdc-enabled with the clientId key) and make clients send client_id explicitly, so that runtime evidence can be attributed to a Keycloak client.",
+      "testability": {"live_test": "anonymous-client"}
+    }
+  ]
+}

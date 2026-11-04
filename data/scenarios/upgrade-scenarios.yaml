@@ -7,8 +7,9 @@
 #   outcome labels below and compared with the expected outcome for the server
 #   version reported by the instance itself.
 #
-# `matrix_verified: false` marks expectations taken from the technical report
-# that still have to be confirmed against the official upgrading guide.
+# `matrix_verified: true` means the expected behaviour is stated by the official
+# Upgrading Guide (data/breaking-changes/catalog.json); it still has to be observed
+# by running the suite against the real containers.
 
 realm: demo
 
@@ -17,10 +18,14 @@ assessments:
     source_version: 26.5.0
     target_version: 26.6.3
     description: Default POC pair (keycloak-source -> keycloak-target).
+  - id: s-22.0-to-26.6.3
+    source_version: 22.0.5
+    target_version: 26.6.3
+    description: Long jump, all four breaking changes apply (role mappers changed in 23.0.0).
   - id: s-25.0-to-26.6.3
     source_version: 25.0.6
     target_version: 26.6.3
-    description: Major upgrade, all breaking changes of the 26.x line apply.
+    description: Major upgrade across 26.0.0, 26.4.3 and 26.6.3.
   - id: s-26.3-to-26.5
     source_version: 26.3.0
     target_version: 26.5.0
@@ -49,7 +54,7 @@ live_tests:
         outcome: accepted
       - versions: ">=26.6.3"
         outcome: rejected
-    matrix_verified: false
+    matrix_verified: true
 
   - id: legacy-logout
     bc_id: KC-BC-002
@@ -70,7 +75,7 @@ live_tests:
         outcome: accepted
       - versions: ">=26.0.0"
         outcome: rejected
-    matrix_verified: false
+    matrix_verified: true
 
   - id: non-normalized-path
     bc_id: KC-BC-003
@@ -88,7 +93,7 @@ live_tests:
         outcome: accepted
       - versions: ">=26.4.3"
         outcome: rejected
-    matrix_verified: false
+    matrix_verified: true
 
   - id: role-mapper-multivalued
     bc_id: KC-BC-004
@@ -100,14 +105,17 @@ live_tests:
       grant_type: client_credentials
       claim: roles
     outcomes:
-      string: "role claim emitted as a single string"
-      array: "role claim emitted as a JSON array"
+      stringified-array: "single-valued mapper emits a stringified JSON array (before 23.0.0)"
+      single-value: "single-valued mapper emits one role value (23.0.0 and later)"
+      array: "claim emitted as a JSON array (mapper is multivalued)"
     expected:
-      - versions: "<26.0.0"
-        outcome: string
-      - versions: ">=26.0.0"
-        outcome: array
-    matrix_verified: false
+      # Official guide, 'Migrating to 23.0.0': single-valued role mappers now map a single value.
+      # Observable before/after only with a source < 23.0.0 (not part of the compose stack).
+      - versions: "<23.0.0"
+        outcome: stringified-array
+      - versions: ">=23.0.0"
+        outcome: single-value
+    matrix_verified: true
 
   - id: anonymous-client
     bc_id: KC-BC-005

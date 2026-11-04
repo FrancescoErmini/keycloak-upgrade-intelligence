@@ -1,0 +1,31 @@
+{
+  "synced_at": "2026-11-04T18:59:44.904743+00:00",
+  "source": "file:../data/breaking-changes/source/upgrading-guide.html",
+  "catalog": {
+    "versions": 56,
+    "entries": 539,
+    "by_category": {
+      "breaking": 72,
+      "notable": 203,
+      "deprecated": 58,
+      "end-of-life": 1,
+      "removed": 7,
+      "uncategorized": 198
+    },
+    "toc_versions": 56
+  },
+  "parse_warnings": [],
+  "diff": {
+    "first_sync": true,
+    "added": 539,
+    "changed": 0,
+    "removed": 0
+  },
+  "llm": {
+    "provider": "none",
+    "model": "none",
+    "stats": {
+      "skipped": "LLM disabled or not configured (LLM_PROVIDER / OPENAI_API_KEY)"
+    }
+  }
+}

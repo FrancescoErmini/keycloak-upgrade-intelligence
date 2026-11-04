@@ -1,0 +1,6 @@
+{
+  "retrieved_from": "rendered locally from the official AsciiDoc sources",
+  "notice": "www.keycloak.org was not reachable from the environment where this snapshot was produced. This HTML was rendered with Asciidoctor.js 3.0.4 from docs/documentation/upgrading of keycloak/keycloak (branch main, 2026-11-04): same sources and generator as the published page, but main may contain unreleased versions (e.g. 27.0.0). Run `python -m app.jobs.sync_breaking_changes` to replace it with the page downloaded from source_url.",
+  "retrieved_at": "2026-11-04T19:00:00+00:00",
+  "source_url": "https://www.keycloak.org/docs/latest/upgrading/index.html"
+}

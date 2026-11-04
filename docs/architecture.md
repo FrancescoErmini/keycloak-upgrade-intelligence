@@ -9,7 +9,7 @@
                            └──────────────┬────────────────┘
                                           ▼
   data/breaking-changes ─► Pipeline A ┐  Pipeline C (log)   Pipeline B (realm) ◄─ data/realms
-   (doc + manifest)      (LLM opz.)   │        │                  │
+   (catalog + rules)                  │        │                  │
                                       ▼        ▼                  ▼
           ┌─────────────────────────── Elasticsearch ───────────────────────────┐
           │ kc-bc-knowledge │ kc-bc-rules │ kc-runtime-logs │ kc-realm-snapshots │
@@ -28,7 +28,11 @@ Breaking change → regola eseguibile → test reale → log ECS → detection �
 ## Moduli backend (`backend/app`)
 | Modulo | Ruolo |
 |---|---|
-| `ingestion/breaking_changes.py` | Pipeline A: parsing Asciidoctor, chunking, embeddings, validazione regole, proposte LLM |
+| `jobs/sync_breaking_changes.py` | job manuale: download guida ufficiale → catalogo JSON → mapping LLM → indicizzazione |
+| `ingestion/upgrading_html.py` | parser HTML → JSON (indice versioni da/a, categorie, voci) |
+| `ingestion/rule_extraction.py` | mapping LLM vincolato sul registro dei detector, cache, report di coerenza |
+| `ingestion/breaking_changes.py` | Pipeline A: indicizza catalogo + regole (nessuna rete, nessun LLM) |
+| `detection/detectors.py` | registro chiuso dei detector: condizioni, categorie e label definite una sola volta |
 | `ingestion/realms.py` | Pipeline B: normalizzazione client (grant type, redirect URI, mapper), snapshot |
 | `ingestion/logs.py` | Pipeline C: access log combined, eventi `org.keycloak.events`, MDC, regola anonymous |
 | `detection/rules.py` | DSL delle condizioni + validazione di grounding |

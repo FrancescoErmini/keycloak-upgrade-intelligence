@@ -556,10 +556,12 @@ def build_logs(specs: list[Spec]) -> tuple[list[dict], list[dict]]:
 # --------------------------------------------------------------------------------------
 # Ground truth
 # --------------------------------------------------------------------------------------
-INTRODUCED_IN = {"KC-BC-001": "26.6.3", "KC-BC-002": "26.0.0", "KC-BC-003": "26.4.3", "KC-BC-004": "26.0.0"}
+# Versions as stated by the official Upgrading Guide (see data/breaking-changes/rules/approved-rules.json)
+INTRODUCED_IN = {"KC-BC-001": "26.6.3", "KC-BC-002": "26.0.0", "KC-BC-003": "26.4.3", "KC-BC-004": "23.0.0"}
 
 SCENARIOS = {
     "s-26.5-to-26.6.3": ("26.5.0", "26.6.3"),
+    "s-22.0-to-26.6.3": ("22.0.5", "26.6.3"),
     "s-25.0-to-26.6.3": ("25.0.6", "26.6.3"),
     "s-26.3-to-26.5": ("26.3.0", "26.5.0"),
 }

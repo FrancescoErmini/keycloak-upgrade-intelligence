@@ -3,8 +3,8 @@
 **Stato:** accettato · **Data:** 2026-11-04
 
 ## Decisione
-- Pipeline A può usare un LLM (locale, Ollama) per **proporre** regole JSON; le proposte vengono validate (citazione verbatim del passaggio, termini ed eventuali parametri presenti nel testo, campi/operatori di un DSL chiuso, versione coerente con la sezione) e salvate come `candidate`.
-- Solo le regole `approved` (manifest curato o promosse da revisione umana) sono eseguite dal motore.
+- Il job manuale di sync usa un LLM (OpenAI con Structured Outputs; in alternativa Ollama) per **mappare** ogni voce della guida sul registro chiuso dei detector (ADR 0005); le proposte vengono validate (citazione verbatim, parametri presenti nel testo, valori ammessi dal registro) e salvate come `candidate`.
+- Solo le regole `approved` (`rules/approved-rules.json`, revisione umana) sono eseguite dal motore.
 - Pipeline B e C sono deterministiche. La detection runtime non richiede un modello.
 - Le spiegazioni RAG sono accettate solo se citano il `bc_id`; altrimenti si usa un template deterministico con citazione.
 

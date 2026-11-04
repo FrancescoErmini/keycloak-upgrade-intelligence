@@ -38,10 +38,6 @@ def expected() -> dict:
     return json.loads((DATA / "scenarios" / "expected-findings.json").read_text())
 
 
-@pytest.fixture(scope="session")
-def manifest() -> dict:
-    return json.loads((DATA / "breaking-changes" / "breaking-changes-manifest.json").read_text())
-
 
 def fixture_path(name: str) -> Path:
     return Path(__file__).parent / "fixtures" / name

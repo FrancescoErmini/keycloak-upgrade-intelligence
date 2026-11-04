@@ -166,10 +166,12 @@ services:
       KC_LEGACY_VERSION: ${KC_LEGACY_VERSION:-25.0.6}
       EMBEDDING_BACKEND: ${EMBEDDING_BACKEND:-hash}
       LLM_PROVIDER: ${LLM_PROVIDER:-none}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4.1-mini}
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-https://api.openai.com/v1}
       OLLAMA_URL: ${OLLAMA_URL:-http://ollama:11434}
       OLLAMA_MODEL: ${OLLAMA_MODEL:-llama3.1:8b}
       AUTO_BOOTSTRAP: ${AUTO_BOOTSTRAP:-true}
-      BC_SOURCE_URL: ${BC_SOURCE_URL:-}
     ports: ["8000:8000"]
     volumes:
       - ./data:/srv/data:ro
@@ -184,6 +186,31 @@ services:
     ports: ["3000:80"]
     depends_on:
       backend: {condition: service_healthy}
+
+  # ------------------------------------------------------------------ jobs (manual)
+  # Sync of the official Upgrading Guide: download -> HTML->JSON catalog -> LLM mapping -> index.
+  #   docker compose --profile jobs run --rm bc-sync [--no-llm] [--max-entries 50] [--dry-run]
+  bc-sync:
+    profiles: [jobs]
+    build: {context: ., dockerfile: backend/Dockerfile}
+    entrypoint: ["python", "-m", "app.jobs.sync_breaking_changes"]
+    command: []
+    environment:
+      STORE_BACKEND: elasticsearch
+      ES_URL: http://elasticsearch:9200
+      BC_SOURCE_URL: ${BC_SOURCE_URL:-https://www.keycloak.org/docs/latest/upgrading/index.html}
+      BC_MIN_VERSION: ${BC_MIN_VERSION:-22.0.0}
+      BC_LLM_CATEGORIES: ${BC_LLM_CATEGORIES:-breaking,deprecated,removed,end-of-life,uncategorized}
+      LLM_PROVIDER: ${LLM_PROVIDER:-openai}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4.1-mini}
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-https://api.openai.com/v1}
+      LLM_TEMPERATURE: ${LLM_TEMPERATURE:-0}
+      EMBEDDING_BACKEND: ${EMBEDDING_BACKEND:-hash}
+    volumes:
+      - ./data:/srv/data          # read-write: catalog, candidates and report are written back to the repo
+    depends_on:
+      elasticsearch: {condition: service_healthy}
 
   # ------------------------------------------------------------------ tests
   test-runner:

@@ -25,8 +25,11 @@ Casi piantati:
 | Scenario | BC applicabili | Client impattati |
 |---|---|---|
 | 26.5.0 → 26.6.3 | 001 | 10 |
-| 25.0.6 → 26.6.3 | 001, 002, 003, 004 | 20 |
+| 22.0.5 → 26.6.3 | 001, 002, 003, 004 | 20 |
+| 25.0.6 → 26.6.3 | 001, 002, 003 | 17 |
 | 26.3.0 → 26.5.0 | 003 | 3 |
+
+Le versioni di introduzione sono quelle della guida ufficiale: 001 → 26.6.3, 002 → 26.0.0, 003 → 26.4.3, 004 → 23.0.0.
 
 ## Criteri di accettazione → test
 | Criterio | Verifica |
@@ -38,9 +41,12 @@ Casi piantati:
 | Controllo falsi positivi | `test_compatible_clients_are_not_flagged` |
 | Gestione anonymous | `test_anonymous_rule_when_client_missing`, `test_anonymous_handling`, `test_ingest_pipeline_applies_anonymous_rule` |
 | RAG verificabile | `test_every_explanation_cites_its_breaking_change`, `test_ungrounded_llm_answer_is_discarded` |
+| Parsing della guida reale | `tests/unit/test_upgrading_html.py` (indice = TOC, versioni da/a, categorie, id stabili) |
+| Coerenza delle regole LLM | `tests/unit/test_rule_extraction.py` (registro chiuso, fingerprint, grounding, cache, approvate prevalgono) |
 | Ripetibilità dei test | fixture `evidence` in `tests/breaking_changes` (request, response, versione, esito, evidenze, finding atteso) |
 
 ## Limiti noti
-- `keycloak-26-upgrading.html` è un estratto curato che parafrasa la guida ufficiale; le regole hanno `verified_against_official_docs: false` finché non vengono riviste. Con `BC_SOURCE_URL` si ingerisce la guida ufficiale: le regole il cui `source_quote` non compare verbatim vengono **rifiutate** dalla validazione, ed è il comportamento voluto.
-- La matrice comportamentale dei test live (`matrix_verified: false`) deriva dal report tecnico e va confermata eseguendo la suite sulle versioni reali.
-- Gli embeddings di default sono hashing locale (deterministici, senza download): adeguati al corpus ridotto; per corpora ampi usare `EMBEDDING_BACKEND=sentence-transformers`.
+- `data/breaking-changes/source/upgrading-guide.html` è stato renderizzato con Asciidoctor dai sorgenti AsciiDoc ufficiali (branch `main` del 2026-11-04), perché `www.keycloak.org` non era raggiungibile dall'ambiente di sviluppo. `main` può contenere versioni non ancora pubblicate (es. 27.0.0). Il job `bc-sync` lo sostituisce con la pagina scaricata.
+- Il parser è verificato sull'output Asciidoctor; la pagina del sito aggiunge header/footer ma usa lo stesso markup. Se il layout cambiasse, `warnings` nel catalogo e il controllo "0 voci estratte" lo segnalano.
+- La matrice comportamentale dei test live è coerente con la guida ufficiale ma va osservata eseguendo la suite sui container reali.
+- Gli embeddings di default sono hashing locale: sul corpus reale (539 voci) la voce giusta è nei primi 3 risultati per le query di test, non sempre al primo posto. Per un ranking migliore usare `EMBEDDING_BACKEND=sentence-transformers`. Le spiegazioni non ne risentono perché filtrano per `bc_id`.

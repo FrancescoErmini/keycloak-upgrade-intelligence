@@ -168,8 +168,8 @@
         "treasury-web"
       ]
     },
-    "s-25.0-to-26.6.3": {
-      "source_version": "25.0.6",
+    "s-22.0-to-26.6.3": {
+      "source_version": "22.0.5",
       "target_version": "26.6.3",
       "expected": [
         {
@@ -392,6 +392,223 @@
         "svc-orders",
         "svc-payments",
         "svc-pricing",
+        "svc-scheduler",
+        "svc-search-indexer",
+        "svc-shipping",
+        "svc-tax",
+        "timesheet-web",
+        "treasury-web"
+      ]
+    },
+    "s-25.0-to-26.6.3": {
+      "source_version": "25.0.6",
+      "target_version": "26.6.3",
+      "expected": [
+        {
+          "bc_id": "KC-BC-001",
+          "client_id": "crm-web",
+          "confidence": "high",
+          "attribution": "explicit"
+        },
+        {
+          "bc_id": "KC-BC-001",
+          "client_id": "expense-web",
+          "confidence": "high",
+          "attribution": "explicit"
+        },
+        {
+          "bc_id": "KC-BC-001",
+          "client_id": "hr-portal",
+          "confidence": "high",
+          "attribution": "explicit"
+        },
+        {
+          "bc_id": "KC-BC-001",
+          "client_id": "intranet",
+          "confidence": "high",
+          "attribution": "explicit"
+        },
+        {
+          "bc_id": "KC-BC-001",
+          "client_id": "legacy-claims",
+          "confidence": "high",
+          "attribution": "explicit"
+        },
+        {
+          "bc_id": "KC-BC-001",
+          "client_id": "legacy-portal",
+          "confidence": "high",
+          "attribution": "explicit"
+        },
+        {
+          "bc_id": "KC-BC-001",
+          "client_id": "legacy-reports",
+          "confidence": "medium",
+          "attribution": "explicit"
+        },
+        {
+          "bc_id": "KC-BC-001",
+          "client_id": "old-claims-web",
+          "confidence": "low",
+          "attribution": "explicit"
+        },
+        {
+          "bc_id": "KC-BC-001",
+          "client_id": "procurement-web",
+          "confidence": "medium",
+          "attribution": "explicit"
+        },
+        {
+          "bc_id": "KC-BC-001",
+          "client_id": "wiki-web",
+          "confidence": "medium",
+          "attribution": "explicit"
+        },
+        {
+          "bc_id": "KC-BC-002",
+          "client_id": "anonymous",
+          "confidence": "medium",
+          "attribution": "none"
+        },
+        {
+          "bc_id": "KC-BC-002",
+          "client_id": "billing-web",
+          "confidence": "medium",
+          "attribution": "inferred-redirect-uri"
+        },
+        {
+          "bc_id": "KC-BC-002",
+          "client_id": "helpdesk-web",
+          "confidence": "high",
+          "attribution": "explicit"
+        },
+        {
+          "bc_id": "KC-BC-002",
+          "client_id": "legacy-portal",
+          "confidence": "medium",
+          "attribution": "inferred-redirect-uri"
+        },
+        {
+          "bc_id": "KC-BC-002",
+          "client_id": "payroll-web",
+          "confidence": "high",
+          "attribution": "explicit"
+        },
+        {
+          "bc_id": "KC-BC-002",
+          "client_id": "travel-web",
+          "confidence": "high",
+          "attribution": "explicit"
+        },
+        {
+          "bc_id": "KC-BC-003",
+          "client_id": "anonymous",
+          "confidence": "high",
+          "attribution": "none"
+        },
+        {
+          "bc_id": "KC-BC-003",
+          "client_id": "spa-catalog",
+          "confidence": "high",
+          "attribution": "explicit"
+        },
+        {
+          "bc_id": "KC-BC-003",
+          "client_id": "spa-checkout",
+          "confidence": "high",
+          "attribution": "explicit"
+        },
+        {
+          "bc_id": "KC-BC-003",
+          "client_id": "svc-inventory-sync",
+          "confidence": "high",
+          "attribution": "explicit"
+        },
+        {
+          "bc_id": "KC-BC-005",
+          "client_id": "anonymous",
+          "confidence": "high",
+          "attribution": "none"
+        }
+      ],
+      "must_not_flag": [
+        "analytics-web",
+        "assets-web",
+        "audit-web",
+        "benefits-web",
+        "compliance-web",
+        "contracts-web",
+        "docs-web",
+        "events-web",
+        "facilities-web",
+        "fleet-web",
+        "learning-web",
+        "legacy-api-hr",
+        "legacy-api-orders",
+        "legacy-api-stock",
+        "legacy-batch-ui",
+        "legacy-cli",
+        "legacy-intranet",
+        "legacy-kiosk",
+        "legal-web",
+        "marketing-web",
+        "partner-web",
+        "projects-web",
+        "quality-web",
+        "recruiting-web",
+        "risk-web",
+        "safety-web",
+        "sales-web",
+        "saml-archive",
+        "saml-benefits",
+        "saml-crm",
+        "saml-docs",
+        "saml-erp",
+        "saml-expenses",
+        "saml-intranet",
+        "saml-lms",
+        "saml-payroll",
+        "saml-procurement",
+        "saml-signing",
+        "saml-ticketing",
+        "saml-travel",
+        "saml-vpn-portal",
+        "saml-wiki",
+        "spa-booking",
+        "spa-careers",
+        "spa-chat",
+        "spa-dashboard",
+        "spa-feedback",
+        "spa-forum",
+        "spa-kiosk",
+        "spa-maps",
+        "spa-mobile-web",
+        "spa-status",
+        "spa-store-locator",
+        "spa-survey",
+        "spa-wallet",
+        "supplier-web",
+        "support-web",
+        "svc-archiver",
+        "svc-audit-export",
+        "svc-backup",
+        "svc-billing-batch",
+        "svc-catalog",
+        "svc-crm-sync",
+        "svc-etl",
+        "svc-fraud",
+        "svc-gateway",
+        "svc-hr-sync",
+        "svc-identity-sync",
+        "svc-ledger-sync",
+        "svc-loyalty",
+        "svc-mailer",
+        "svc-metrics",
+        "svc-notifications",
+        "svc-orders",
+        "svc-payments",
+        "svc-pricing",
+        "svc-reporting",
         "svc-scheduler",
         "svc-search-indexer",
         "svc-shipping",

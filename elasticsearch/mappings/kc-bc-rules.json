@@ -1,28 +1,108 @@
 {
-  "settings": {"number_of_shards": 1, "number_of_replicas": 0},
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 0
+  },
   "mappings": {
     "dynamic": "strict",
     "properties": {
-      "bc_id": {"type": "keyword"},
-      "title": {"type": "text", "fields": {"raw": {"type": "keyword"}}},
-      "kind": {"type": "keyword"},
-      "category": {"type": "keyword"},
-      "category_label": {"type": "keyword"},
-      "introduced_in": {"type": "keyword"},
-      "severity": {"type": "keyword"},
-      "section_anchor": {"type": "keyword"},
-      "source_quote": {"type": "text"},
-      "source_url": {"type": "keyword"},
-      "evidence_terms": {"type": "keyword"},
-      "detection": {"type": "object", "enabled": false},
-      "remediation": {"type": "text"},
-      "testability": {"type": "object", "enabled": false},
-      "status": {"type": "keyword"},
-      "origin": {"type": "keyword"},
-      "review": {"type": "object", "enabled": false},
-      "validation": {"type": "object", "enabled": false},
-      "rule_hash": {"type": "keyword"},
-      "ingested_at": {"type": "date"}
+      "bc_id": {
+        "type": "keyword"
+      },
+      "title": {
+        "type": "text",
+        "fields": {
+          "raw": {
+            "type": "keyword"
+          }
+        }
+      },
+      "kind": {
+        "type": "keyword"
+      },
+      "category": {
+        "type": "keyword"
+      },
+      "category_label": {
+        "type": "keyword"
+      },
+      "introduced_in": {
+        "type": "keyword"
+      },
+      "severity": {
+        "type": "keyword"
+      },
+      "section_anchor": {
+        "type": "keyword"
+      },
+      "source_quote": {
+        "type": "text"
+      },
+      "source_url": {
+        "type": "keyword"
+      },
+      "evidence_terms": {
+        "type": "keyword"
+      },
+      "detection": {
+        "type": "object",
+        "enabled": false
+      },
+      "remediation": {
+        "type": "text"
+      },
+      "testability": {
+        "type": "object",
+        "enabled": false
+      },
+      "status": {
+        "type": "keyword"
+      },
+      "origin": {
+        "type": "keyword"
+      },
+      "review": {
+        "type": "object",
+        "enabled": false
+      },
+      "validation": {
+        "type": "object",
+        "enabled": false
+      },
+      "rule_hash": {
+        "type": "keyword"
+      },
+      "ingested_at": {
+        "type": "date"
+      },
+      "entry_id": {
+        "type": "keyword"
+      },
+      "change_type": {
+        "type": "keyword"
+      },
+      "impact_area": {
+        "type": "keyword"
+      },
+      "detector": {
+        "type": "keyword"
+      },
+      "detector_label": {
+        "type": "keyword"
+      },
+      "detector_params": {
+        "type": "object",
+        "enabled": false
+      },
+      "fingerprint": {
+        "type": "keyword"
+      },
+      "from_version": {
+        "type": "keyword"
+      },
+      "rationale": {
+        "type": "text"
+      }
     }
   }
 }
