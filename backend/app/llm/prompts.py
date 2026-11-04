@@ -3,30 +3,49 @@ from __future__ import annotations
 
 import json
 
-PROMPT_VERSION = "2026-11-04.1"
+PROMPT_VERSION = "2026-11-04.3"
 
-RULE_SYSTEM = """You classify one entry of the Keycloak Upgrading Guide and map it onto a CLOSED registry of detectors.
-You never write regular expressions, field names or labels: you only choose a detector id from the registry and fill
-its parameters with the allowed values. Rules:
-1. Use only the entry text. Never invent endpoints, parameters, options or versions.
-2. "source_quote" must be ONE sentence copied verbatim (character by character) from the entry text.
-3. If the change cannot be observed in a client configuration (realm export) or in HTTP access logs / Keycloak events
-   (e.g. SPI/Java API, operator, database, theme, server option changes), use detector "none" and decision
-   "not_detectable" (or "not_client_impacting" when no application is affected).
-4. If the change is detectable but no detector fits, use detector "none", decision "not_detectable" and describe
-   the missing detector in "proposed_detector" (short snake_case name). Never stretch a detector to fit.
-5. Parameters not used by the chosen detector must be null. Identifier parameters (param, attribute, event_type) must
-   appear literally in the entry text.
-6. Same kind of change => same detector and same parameters: follow the examples."""
+RULE_SYSTEM = """You are a senior Keycloak engineer preparing a production upgrade.
+
+You receive ONE entry of the official Keycloak Upgrading Guide. Work out how an operator could find out,
+on a live Keycloak installation, whether this change affects them and which clients (applications) are impacted.
+
+Think freely, like an SRE writing an upgrade checklist. Consider every place where the change could leave a trace:
+the realm export (client configuration, redirect URIs, protocol mappers, flows), HTTP access logs, Keycloak event logs,
+server logs, server info (features, installed SPI providers), server startup options, custom extensions, themes,
+the database, Kubernetes/Operator resources, the client applications themselves.
+
+Return one item in "checks" for every distinct verification. If the change can be observed in several places,
+return several checks (e.g. one on the realm export and one on the access log). Mark the data source of EVERY check,
+even when it is something like server_info, server_config or custom_extensions: checks are filtered later by the data
+sources actually available, so do not drop a check because it looks hard to run.
+
+For each check:
+- say what to look at, how to look at it, and what result means "impacted";
+- set "scope" to "client" when the check can point at specific clients, otherwise "realm" or "server";
+- if the check matches one of the automated detectors provided, set "detector" and fill its params
+  (unused params null); otherwise set "detector" to "none" and describe the check precisely enough for a human;
+- copy in "evidence_quote" a sentence of the entry, verbatim, that justifies the check.
+
+Attach a detector only when it selects exactly the clients or requests affected by the change. A detector that would
+also flag many unaffected clients (for example every client with a common grant type) is wrong: use "none" and
+describe the precise check instead. Use log.message.contains only for a message that the entry says Keycloak writes
+to its log.
+
+Stay grounded in the entry: do not invent endpoints, parameters, options or versions it does not mention.
+If the change has no observable effect at all (e.g. purely internal refactoring), return an empty "checks" list and
+say why in "analysis".
+Write "analysis" first: briefly reason about what changes for clients and where it shows up, then fill the rest."""
 
 
-def rule_user_message(entry: dict, registry: list[dict], examples: list[dict]) -> str:
+def rule_user_message(entry: dict, registry: list[dict], examples: list[dict], data_sources: dict) -> str:
     return json.dumps({
-        "detector_registry": registry,
+        "data_sources": data_sources,
+        "automated_detectors": registry,
         "examples": examples,
-        "entry": {"version": entry["version"], "from_version": entry.get("from_version"),
+        "entry": {"version": entry["version"], "upgrading_from": entry.get("from_version"),
                   "category_in_guide": entry["category"], "title": entry["title"], "text": entry["text"][:6000]},
-    }, ensure_ascii=False)
+    }, ensure_ascii=False, indent=1)
 
 
 def explanation(finding: dict, passages: list[dict]) -> str:

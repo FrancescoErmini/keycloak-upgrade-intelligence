@@ -34,7 +34,7 @@ def test_structured_output_request(monkeypatch):
     assert body["model"] == "gpt-4.1-mini" and body["temperature"] == 0.0 and body["seed"] == 7
     fmt = body["response_format"]
     assert fmt["type"] == "json_schema" and fmt["json_schema"]["strict"] is True
-    assert fmt["json_schema"]["schema"]["properties"]["detector"]["enum"]
+    assert fmt["json_schema"]["schema"]["properties"]["checks"]["items"]["properties"]["data_source"]["enum"]
 
 
 def test_temperature_can_be_omitted_and_key_required(monkeypatch):

@@ -41,13 +41,6 @@
       "source_url": {
         "type": "keyword"
       },
-      "evidence_terms": {
-        "type": "keyword"
-      },
-      "detection": {
-        "type": "object",
-        "enabled": false
-      },
       "remediation": {
         "type": "text"
       },
@@ -81,26 +74,23 @@
       "change_type": {
         "type": "keyword"
       },
-      "impact_area": {
-        "type": "keyword"
-      },
-      "detector": {
-        "type": "keyword"
-      },
-      "detector_label": {
-        "type": "keyword"
-      },
-      "detector_params": {
-        "type": "object",
-        "enabled": false
-      },
-      "fingerprint": {
-        "type": "keyword"
-      },
       "from_version": {
         "type": "keyword"
       },
-      "rationale": {
+      "checks": {
+        "type": "object",
+        "enabled": false
+      },
+      "data_sources": {
+        "type": "keyword"
+      },
+      "detectors": {
+        "type": "keyword"
+      },
+      "fingerprints": {
+        "type": "keyword"
+      },
+      "analysis": {
         "type": "text"
       }
     }

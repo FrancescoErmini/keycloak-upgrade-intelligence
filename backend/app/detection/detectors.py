@@ -19,9 +19,26 @@ from typing import Any, Callable
 
 from ..utils import stable_id
 
-REGISTRY_VERSION = "2026-11-04.1"
+REGISTRY_VERSION = "2026-11-04.3"
 
 # ---- fixed taxonomies ---------------------------------------------------------------------
+# Where a check gets its evidence. The LLM marks every check with one of these, including
+# sources we cannot read today; detection runs only checks whose source is available
+# (settings.available_data_sources).
+DATA_SOURCES = {
+    "realm_export": "Realm export JSON: clients, redirect URIs, protocol mappers, flows, client scopes",
+    "access_log": "Keycloak HTTP access log: method, path, query parameters, status code",
+    "event_log": "Keycloak events (org.keycloak.events): event type, clientId, error",
+    "server_log": "Keycloak server/application log messages (warnings, deprecation notices, errors)",
+    "server_info": "Admin console server info: version, enabled features, installed SPI providers",
+    "server_config": "Server startup options / keycloak.conf / environment variables",
+    "admin_api": "Live queries to the Admin REST API (state not present in a realm export)",
+    "database": "Direct inspection of the Keycloak database",
+    "custom_extensions": "Code of custom SPI providers / extensions deployed in the server",
+    "themes": "Custom login/account/admin themes",
+    "operator": "Keycloak Operator / Kubernetes resources",
+    "client_application": "Code or configuration of the client applications themselves",
+}
 CHANGE_TYPES = ("breaking", "notable", "deprecated", "removed", "end-of-life")
 SEVERITIES = ("critical", "high", "medium", "low", "info")
 IMPACT_AREAS = (
@@ -36,6 +53,7 @@ CATEGORY_LABELS = {
     "protocol-token-mapping": "Protocol / token mapping",
     "client-configuration": "Client configuration",
     "keycloak-events": "Keycloak events",
+    "server-log-signals": "Server log signals",
     "unattributed-calls": "Unattributed calls (control)",
     "manual-review": "Manual review",
 }
@@ -62,6 +80,15 @@ MAPPER_TYPES = (
     "oidc-usermodel-realm-role-mapper", "oidc-usermodel-client-role-mapper", "oidc-usermodel-attribute-mapper",
     "oidc-group-membership-mapper", "oidc-hardcoded-claim-mapper", "oidc-audience-mapper",
 )
+# how each grant is named in the documentation: the grant must be mentioned by the entry
+GRANT_TERMS = {
+    "authorization_code": ("authorization code", "authorization_code", "standard flow"),
+    "implicit": ("implicit",),
+    "password": ("password grant", "direct access grant", "resource owner password"),
+    "client_credentials": ("client credentials", "client_credentials", "service account"),
+    "bearer-only": ("bearer-only", "bearer only"),
+    "saml": ("saml",),
+}
 _IDENT = re.compile(r"^[A-Za-z0-9_.\-]{1,80}$")
 _EVENT = re.compile(r"^[A-Z][A-Z0-9_]{1,60}$")
 
@@ -74,7 +101,7 @@ CLIENT_ACTIVITY = {"any": [
 @dataclass(frozen=True)
 class Param:
     name: str
-    kind: str  # enum | enum_list | ident | event
+    kind: str  # enum | enum_list | ident | event | phrase
     choices: tuple[str, ...] = ()
     grounded: bool = False  # value must literally appear in the documentation entry
 
@@ -86,6 +113,7 @@ class Detector:
     category: str
     source: str  # static | runtime | none
     description: str
+    data_source: str | None
     params: tuple[Param, ...] = ()
     compile: Callable[[dict], dict | None] = field(default=lambda p: None, repr=False)
 
@@ -140,6 +168,13 @@ def _non_normalized(_: dict) -> dict:
     return {"runtime": {"mode": "detect", "condition": {"field": "url.path", "op": "regex", "value": r"//|/\.\.?(/|$)"}}}
 
 
+def _log_message(p: dict) -> dict:
+    return {"runtime": {"mode": "detect", "condition": {"all": [
+        {"field": "event.kind", "op": "eq", "value": "application"},
+        {"field": "message", "op": "regex", "value": re.escape(p["text"])},
+    ]}}}
+
+
 def _event(p: dict) -> dict:
     return {"runtime": {"mode": "detect", "condition": {"field": "event.action", "op": "eq", "value": p["event_type"]}}}
 
@@ -147,26 +182,32 @@ def _event(p: dict) -> dict:
 DETECTORS: dict[str, Detector] = {d.id: d for d in (
     Detector("client.redirect_uri.hostname_wildcard", "Wildcard in redirect URI hostname", "redirect-uri-validation",
              "static", "A valid redirect URI has a '*' wildcard inside or right after the host name (e.g. https://example.com*).",
-             compile=_redirect_wildcard),
+             "realm_export", compile=_redirect_wildcard),
     Detector("client.protocol_mapper.single_valued", "Single-valued protocol mapper", "protocol-token-mapping", "static",
-             "A client protocol mapper of the given types has the Multivalued setting disabled.",
+             "A client protocol mapper of the given types has the Multivalued setting disabled.", "realm_export",
              (Param("mapper_types", "enum_list", MAPPER_TYPES),), _mapper),
     Detector("client.grant.enabled", "Grant type enabled on client", "client-configuration", "static",
-             "Clients that have the given grant / flow enabled.", (Param("grant", "enum", GRANTS),), _grant),
+             "Clients that have the given grant / flow enabled.", "realm_export", (Param("grant", "enum", GRANTS),), _grant),
     Detector("client.attribute.present", "Client attribute configured", "client-configuration", "static",
-             "Clients that set a specific client attribute (attribute key copied from the documentation).",
+             "Clients that set a specific client attribute (attribute key copied from the documentation).", "realm_export",
              (Param("attribute", "ident", grounded=True),), _attribute),
     Detector("http.endpoint.query_param", "Query parameter on endpoint", "deprecated-http-endpoints", "runtime",
-             "HTTP requests to the given endpoint carrying the given query parameter.",
+             "HTTP requests to the given endpoint carrying the given query parameter.", "access_log",
              (Param("endpoint", "enum", tuple(ENDPOINTS)), Param("param", "ident", grounded=True)), _query_param),
     Detector("http.endpoint.called", "Endpoint called", "deprecated-http-endpoints", "runtime",
-             "HTTP requests to the given (deprecated/removed) endpoint.", (Param("endpoint", "enum", tuple(ENDPOINTS)),), _endpoint),
+             "HTTP requests to the given (deprecated/removed) endpoint.", "access_log",
+             (Param("endpoint", "enum", tuple(ENDPOINTS)),), _endpoint),
     Detector("http.path.non_normalized", "Non-normalized request path", "deprecated-http-endpoints", "runtime",
-             "HTTP requests whose path contains '//' or dot segments ('/./', '/../').", compile=_non_normalized),
+             "HTTP requests whose path contains '//' or dot segments ('/./', '/../').", "access_log",
+             compile=_non_normalized),
     Detector("event.type", "Keycloak event type observed", "keycloak-events", "runtime",
-             "Keycloak events (org.keycloak.events) of the given type.", (Param("event_type", "event", grounded=True),), _event),
-    Detector("none", "Not detectable from realm/logs", "manual-review", "none",
-             "Server-side, SPI, operator, theme or database change: not observable in client config or HTTP logs."),
+             "Keycloak events (org.keycloak.events) of the given type.", "event_log",
+             (Param("event_type", "event", grounded=True),), _event),
+    Detector("log.message.contains", "Server log message", "server-log-signals", "runtime",
+             "Server log records whose message contains the given literal text (e.g. a deprecation warning).",
+             "server_log", (Param("text", "phrase", grounded=True),), _log_message),
+    Detector("none", "Manual / external check", "manual-review", "none",
+             "No automated detector: the check is described in words and run by a human or another tool.", None),
 )}
 DETECTOR_IDS = tuple(DETECTORS)
 
@@ -200,10 +241,18 @@ def canonical_params(detector_id: str, raw: dict | None, entry_text: str = "") -
             v = str(v).strip().strip("`")
             if not _IDENT.match(v):
                 raise DetectorError(f"{detector_id}: {p.name}={v!r} is not a plain identifier")
+        elif p.kind == "phrase":
+            v = re.sub(r"\s+", " ", str(v).strip().strip("`")).strip()
+            if not 4 <= len(v) <= 200:
+                raise DetectorError(f"{detector_id}: {p.name} must be 4-200 characters")
         elif p.kind == "event":
             v = str(v).strip().upper()
             if not _EVENT.match(v):
                 raise DetectorError(f"{detector_id}: {p.name}={v!r} is not an event type")
+        if p.name == "grant" and entry_text and not any(t in text for t in GRANT_TERMS[v]):
+            raise DetectorError(f"{detector_id}: grant {v!r} is not mentioned in the documentation entry")
+        if detector_id == "log.message.contains" and entry_text and not re.search(r"\blog", text):
+            raise DetectorError(f"{detector_id}: the entry does not talk about log messages")
         if p.grounded and entry_text and str(v).lower() not in text:
             raise DetectorError(f"{detector_id}: {p.name}={v!r} does not appear in the documentation entry")
         out[p.name] = v
@@ -220,6 +269,6 @@ def compile_detection(detector_id: str, params: dict) -> dict | None:
 
 
 def catalog_for_prompt() -> list[dict]:
-    return [{"id": d.id, "source": d.source, "description": d.description,
+    return [{"id": d.id, "data_source": d.data_source, "description": d.description,
              "params": {p.name: (list(p.choices) if p.choices else p.kind) for p in d.params}}
             for d in DETECTORS.values()]

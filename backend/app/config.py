@@ -38,6 +38,9 @@ class Settings:
     llm_seed: int = field(default_factory=lambda: int(_env("LLM_SEED", "7")))
     ollama_url: str = field(default_factory=lambda: _env("OLLAMA_URL", "http://ollama:11434"))
     ollama_model: str = field(default_factory=lambda: _env("OLLAMA_MODEL", "llama3.1:8b"))
+    # Data sources we can read at detection time; checks on other sources are reported, not run
+    available_data_sources: tuple[str, ...] = field(default_factory=lambda: tuple(
+        _env("AVAILABLE_DATA_SOURCES", "realm_export,access_log,event_log,server_log").split(",")))
     auto_bootstrap: bool = field(default_factory=lambda: _env("AUTO_BOOTSTRAP", "false").lower() == "true")
     # Maps runtime log sub-directories (instance name) to the Keycloak version they run.
     instance_versions: dict[str, str] = field(default_factory=lambda: {

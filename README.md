@@ -58,7 +58,7 @@ python -m app.cli assess 26.5.0 26.6.3 --origin keycloak-runtime
 | `test-runner` | pytest: traffico OIDC reale + validation suite |
 
 ## Pipeline
-- **Sync manuale della guida ufficiale** (`backend/app/jobs/sync_breaking_changes.py`): scarica la pagina, la serializza in `data/breaking-changes/catalog.json` (indice versioni *da → a*, categorie breaking / notable / deprecated / removed / end-of-life, voci), e usa OpenAI per mappare ogni voce su un **registro chiuso di detector** → regole `candidate`. Vedi [docs/breaking-changes-sync.md](docs/breaking-changes-sync.md).
+- **Sync manuale della guida ufficiale** (`backend/app/jobs/sync_breaking_changes.py`): scarica la pagina, la serializza in `data/breaking-changes/catalog.json` (indice versioni *da → a*, categorie breaking / notable / deprecated / removed / end-of-life, voci), e usa OpenAI per ricavare da ogni voce le **verifiche** da fare su un'istanza reale (più check per voce, ognuno con la sua fonte dati: realm export, access log, event log, server log, server config, server info, SPI…). I check che corrispondono a un detector del registro diventano eseguibili; in detection girano solo quelli con fonte disponibile (`AVAILABLE_DATA_SOURCES`). Vedi [docs/breaking-changes-sync.md](docs/breaking-changes-sync.md).
 - **A, Breaking changes** (`backend/app/ingestion/breaking_changes.py`): indicizza catalogo + regole approvate/candidate; nessuna rete, nessun LLM.
 - **B, Realm** (`ingestion/realms.py`): deterministica.
 - **C, Log** (`ingestion/logs.py`): deterministica; `client_id = extracted_client_id or "anonymous"` + `client_identified`.

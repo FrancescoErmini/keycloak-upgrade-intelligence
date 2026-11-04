@@ -33,6 +33,8 @@ class AssessmentRequest(BaseModel):
     snapshot_id: str | None = None
     log_origins: list[str] | None = Field(default=None, examples=[["synthetic-fixture", "keycloak-runtime"]])
     label: str | None = None
+    data_sources: list[str] | None = Field(default=None, examples=[["realm_export", "access_log"]],
+                                           description="override AVAILABLE_DATA_SOURCES for this assessment")
 
 
 @router.get("/health")
@@ -103,7 +105,7 @@ def create_assessment(req: AssessmentRequest, store: Store = Depends(store_dep))
         raise HTTPException(422, "source_version must be lower than target_version")
     try:
         return run_assessment(store, req.source_version, req.target_version, snapshot_id=req.snapshot_id,
-                              log_origins=req.log_origins, label=req.label)
+                              log_origins=req.log_origins, label=req.label, data_sources=req.data_sources)
     except ValueError as exc:
         raise HTTPException(409, str(exc)) from exc
 

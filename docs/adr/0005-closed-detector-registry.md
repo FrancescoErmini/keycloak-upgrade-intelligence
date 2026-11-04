@@ -12,7 +12,8 @@ Chiedere a un LLM di "scrivere una regola di detection" per ogni voce della guid
 4. **Grounding**: citazione verbatim obbligatoria; i parametri identificativi (nome parametro, attributo, tipo evento) devono comparire letteralmente nel testo della voce.
 5. **Determinismo e cache**: temperatura 0 + seed; risultato memorizzato per `(hash contenuto voce, versione prompt, versione registro, modello)`. Una voce invariata non viene richiesta di nuovo, quindi un nuovo sync non può rietichettarla.
 6. **Esempi few-shot** dalle regole approvate; le regole approvate prevalgono sempre sui candidati.
-7. **Via d'uscita esplicita**: se nessun detector è adatto, `detector: "none"` + `proposed_detector`. Le proposte sono aggregate in `sync-report.json` (`detector_proposals`); un nuovo detector entra nel registro solo con una modifica di codice revisionata (`REGISTRY_VERSION`).
+7. **Analisi libera, esecuzione chiusa** (aggiornamento): l'LLM descrive liberamente più *check* per voce, ognuno con una `data_source` da un enum (anche server_config, server_info, custom_extensions…). Solo i check con un detector del registro e una fonte disponibile vengono eseguiti; gli altri restano come verifiche manuali, raggruppate per fonte in `sync-report.json` (`manual_checks_by_data_source`), utile per decidere quali fonti o detector aggiungere. Un nuovo detector entra nel registro solo con una modifica di codice revisionata (`REGISTRY_VERSION`).
+8. **Niente detector "larghi"**: il prompt vieta detector che selezionerebbero anche client non impattati e il codice verifica che il grant scelto sia nominato nella voce e che `log.message.contains` si usi solo se la voce parla di messaggi di log.
 
 ## Conseguenze
 - Nuove tipologie di BC richiedono di estendere il registro: è il prezzo della coerenza, e il report dice quali servono.

@@ -64,52 +64,60 @@ def chunk_text(text: str, max_chars: int = CHUNK_CHARS) -> list[str]:
     return chunks + ([cur] if cur else []) or [""]
 
 
+def compile_check(c: dict) -> dict:
+    det = DETECTORS[c["detector"]]
+    return {**{k: c.get(k) for k in ("check_id", "data_source", "what_to_check", "how_to_check", "impact_signal",
+                                      "scope", "evidence_quote", "detector", "params", "fingerprint", "executable")},
+            "label": det.label if c["executable"] else c.get("label"),
+            "category": det.category,
+            "detection": compile_detection(c["detector"], c["params"]) if c["executable"] else None}
+
+
 def build_rule_doc(spec: dict, entry: dict, origin: str, status: str) -> dict:
-    """Merge a (validated) rule spec with its catalog entry and the detector registry."""
-    det = DETECTORS[spec["detector"]]
-    detection = compile_detection(spec["detector"], spec["params"])
+    """Merge a validated rule spec with its catalog entry and the detector registry."""
+    checks = [compile_check(c) for c in spec["checks"]]
+    category = spec["category"]
     return {
         "bc_id": spec["bc_id"],
         "entry_id": entry["entry_id"],
         "title": entry["title"],
         "kind": "breaking-change",
         "change_type": spec["change_type"],
-        "impact_area": spec.get("impact_area"),
-        # finding category and labels come from the registry, never from free LLM text
-        "category": det.category,
-        "category_label": det.category_label,
-        "detector": det.id,
-        "detector_label": det.label,
-        "detector_params": spec["params"],
-        "fingerprint": spec["fingerprint"],
+        # finding category and labels come from the registry (primary executable check), never from free text
+        "category": category,
+        "category_label": CATEGORY_LABELS[category],
+        "checks": checks,
+        "data_sources": spec["data_sources"],
+        "detectors": sorted({c["detector"] for c in checks if c["executable"]}),
+        "fingerprints": spec["fingerprints"],
         "introduced_in": entry["version"],
         "from_version": entry.get("from_version"),
         "severity": spec["severity"],
         "section_anchor": entry.get("anchor"),
         "source_url": entry.get("url"),
-        "source_quote": spec["source_quote"],
-        "evidence_terms": [],
-        "detection": detection,
+        "source_quote": spec.get("source_quote"),
+        "analysis": spec.get("analysis"),
         "remediation": spec.get("remediation") or "",
-        "rationale": spec.get("rationale"),
         "testability": spec.get("testability"),
-        "status": status if detection else "not-detectable",
+        "status": status if checks else "no-checks",
         "origin": origin,
         "review": spec.get("review") or {"approved_by": None},
         "validation": {"grounded": True, "validated_at": now()},
-        "rule_hash": stable_id(spec["fingerprint"], entry["content_hash"], spec["severity"], length=40),
+        "rule_hash": stable_id(spec["fingerprints"], entry["content_hash"], spec["severity"], length=40),
         "ingested_at": now(),
     }
 
 
 def build_control_doc(ctrl: dict) -> dict:
+    checks = [{**c, "evidence_quote": None, "detector": None, "params": None, "fingerprint": f"control:{c['check_id']}",
+               "executable": True, "label": ctrl["title"], "category": ctrl["category"]} for c in ctrl["checks"]]
     return {
         "bc_id": ctrl["bc_id"], "entry_id": None, "title": ctrl["title"], "kind": "control", "change_type": None,
-        "impact_area": None, "category": ctrl["category"], "category_label": CATEGORY_LABELS[ctrl["category"]],
-        "detector": None, "detector_label": None, "detector_params": None, "fingerprint": None,
-        "introduced_in": None, "from_version": None, "severity": ctrl["severity"], "section_anchor": None,
-        "source_url": None, "source_quote": None, "evidence_terms": [], "detection": ctrl["detection"],
-        "remediation": ctrl["remediation"], "rationale": None, "testability": ctrl.get("testability"),
+        "category": ctrl["category"], "category_label": CATEGORY_LABELS[ctrl["category"]], "checks": checks,
+        "data_sources": sorted({c["data_source"] for c in checks}), "detectors": [],
+        "fingerprints": [c["fingerprint"] for c in checks], "introduced_in": None, "from_version": None,
+        "severity": ctrl["severity"], "section_anchor": None, "source_url": None, "source_quote": None,
+        "analysis": None, "remediation": ctrl["remediation"], "testability": ctrl.get("testability"),
         "status": "approved", "origin": "approved-rules", "review": {"approved_by": "poc-curator"},
         "validation": {"grounded": None, "validated_at": now()}, "rule_hash": stable_id(ctrl, length=40),
         "ingested_at": now(),
@@ -126,9 +134,11 @@ def build_rules(catalog: dict, approved: dict, candidates: dict[str, dict]) -> t
             rejected.append({"bc_id": spec["bc_id"], "origin": "approved-rules",
                              "errors": [f"entry {spec['entry_id']!r} not in catalog (renamed or removed upstream?)"]})
             continue
-        canon, errors = validate_spec({"decision": "rule", **spec}, entry)
+        canon, errors, bad_checks = validate_spec(spec, entry)
+        if errors or bad_checks:
+            rejected.append({"bc_id": spec["bc_id"], "origin": "approved-rules", "errors": errors,
+                             "rejected_checks": bad_checks})
         if errors:
-            rejected.append({"bc_id": spec["bc_id"], "origin": "approved-rules", "errors": errors})
             continue
         approved_entries.add(entry["entry_id"])
         docs.append(build_rule_doc({**spec, **canon}, entry, "approved-rules", "approved"))

@@ -28,7 +28,7 @@ REDIRECT_FIELDS = {"uri", "scheme", "authority", "host_wildcard", "path_wildcard
 LOG_FIELDS = {
     "url.path", "url.query", "url.original", "url.query_param_names", "http.request.method",
     "http.response.status_code", "event.kind", "event.action", "event.outcome", "client_id",
-    "client_identified", "keycloak.realm", "keycloak.error",
+    "client_identified", "keycloak.realm", "keycloak.error", "message",
 }
 
 
@@ -153,20 +153,25 @@ def validate_rule(rule: dict) -> list[str]:
         errors.append(f"invalid severity {rule['severity']!r}")
     if rule["kind"] == "breaking-change" and parse_version(rule.get("introduced_in")) is None:
         errors.append(f"invalid introduced_in {rule.get('introduced_in')!r}")
-    detection = rule.get("detection")
-    if not detection:
-        return errors  # not detectable: documented, never executed
-    params: list[str] = []
-    if detection.get("static"):
-        if detection["static"].get("target") != "client":
-            errors.append("static.target must be 'client'")
-        _walk(detection["static"].get("condition", {}), "client", errors, params)
-    if detection.get("runtime"):
-        if detection["runtime"].get("mode") not in RUNTIME_MODES:
-            errors.append(f"invalid runtime.mode {detection['runtime'].get('mode')!r}")
-        if detection["runtime"].get("mode") == "corroborate" and not detection.get("static"):
-            errors.append("a 'corroborate' runtime part requires a static part")
-        _walk(detection["runtime"].get("condition", {}), "log", errors, params)
+    from .detectors import DATA_SOURCES
+
+    for check in rule.get("checks") or []:
+        if check.get("data_source") not in DATA_SOURCES:
+            errors.append(f"check {check.get('check_id')}: invalid data_source {check.get('data_source')!r}")
+        detection = check.get("detection")
+        if not detection:
+            continue  # manual check: documented, never executed
+        params: list[str] = []
+        if detection.get("static"):
+            if detection["static"].get("target") != "client":
+                errors.append("static.target must be 'client'")
+            _walk(detection["static"].get("condition", {}), "client", errors, params)
+        if detection.get("runtime"):
+            if detection["runtime"].get("mode") not in RUNTIME_MODES:
+                errors.append(f"invalid runtime.mode {detection['runtime'].get('mode')!r}")
+            if detection["runtime"].get("mode") == "corroborate" and not detection.get("static"):
+                errors.append("a 'corroborate' runtime part requires a static part")
+            _walk(detection["runtime"].get("condition", {}), "log", errors, params)
     return errors
 
 

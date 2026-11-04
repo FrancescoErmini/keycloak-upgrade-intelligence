@@ -1,58 +1,185 @@
 {
-  "schema_version": "2.0",
-  "notice": "Human-approved rules. They reference catalog entries (catalog.json, parsed from the official Upgrading Guide) by entry_id; title, version, anchor and URL come from the catalog. Detection is expressed only as detector + params from backend/app/detection/detectors.py. Approved rules always take precedence over LLM candidates for the same entry.",
+  "schema_version": "3.0",
+  "notice": "Human-approved rules. Each rule references a catalog entry (catalog.json) and lists checks; every check declares its data source. Only checks with an automated detector AND an available data source (AVAILABLE_DATA_SOURCES) are executed; the others are reported as not executed. Approved rules always take precedence over LLM candidates for the same entry.",
   "rules": [
     {
       "bc_id": "KC-BC-001",
       "entry_id": "kc-26.6.3-breaking-valid-redirect-uris-for-clients-do-not-accept-wildcards-for-hostname-anymore",
-      "detector": "client.redirect_uri.hostname_wildcard",
-      "params": {},
       "change_type": "breaking",
-      "impact_area": "redirect-uri-validation",
       "severity": "high",
       "source_quote": "Since this release, the hostname does not accept such type of wildcard and those patterns will be managed as if the wildcard is after the hostname https://example.com/*.",
       "remediation": "Replace every valid redirect URI with a wildcard right after the host (e.g. https://example.com*) with an explicit host followed by a path (e.g. https://example.com/*), register other hosts explicitly, and prefer exact redirect URIs.",
-      "testability": {"observable_from_source_below": "26.6.3", "live_test": "redirect-wildcard"},
-      "review": {"approved_by": "poc-curator", "verified_against_official_docs": true}
+      "testability": {
+        "observable_from_source_below": "26.6.3",
+        "live_test": "redirect-wildcard"
+      },
+      "review": {
+        "approved_by": "poc-curator",
+        "verified_against_official_docs": true
+      },
+      "checks": [
+        {
+          "check_id": "redirect_uri_hostname_wildcard",
+          "data_source": "realm_export",
+          "what_to_check": "Valid redirect URIs of every client",
+          "how_to_check": "Look for redirect URIs with a '*' right after or inside the host name, e.g. https://example.com*; the full wildcard https://* is still accepted",
+          "impact_signal": "The client relies on the wildcard matching other host names, which is no longer the case",
+          "scope": "client",
+          "evidence_quote": "Previously patterns like https://example.com* were accepted and lead to allow unintended domains like https://example.com.other.domain.com.",
+          "detector": "client.redirect_uri.hostname_wildcard",
+          "params": {}
+        },
+        {
+          "check_id": "authorization_redirects_to_other_hosts",
+          "data_source": "access_log",
+          "what_to_check": "Authorization requests whose redirect_uri host differs from the registered host but matched the hostname wildcard",
+          "how_to_check": "For clients flagged on the realm export, compare the redirect_uri query parameter of /protocol/openid-connect/auth requests with the registered host",
+          "impact_signal": "Requests to hosts like example.com.other.domain.com that will be rejected after the upgrade",
+          "scope": "client",
+          "evidence_quote": "Since this release, the hostname does not accept such type of wildcard and those patterns will be managed as if the wildcard is after the hostname https://example.com/*.",
+          "detector": "none",
+          "params": {}
+        }
+      ]
     },
     {
       "bc_id": "KC-BC-002",
       "entry_id": "kc-26.0.0-uncategorized-support-for-legacy-redirect-uri-parameter-and-spi-options-has-been-removed",
-      "detector": "http.endpoint.query_param",
-      "params": {"endpoint": "oidc-logout", "param": "redirect_uri"},
       "change_type": "removed",
-      "impact_area": "http-endpoints",
       "severity": "critical",
       "source_quote": "This functionality was deprecated in Keycloak 18 and has been removed in this version in favor of following the OpenID Connect specification.",
       "remediation": "Implement OpenID Connect RP-Initiated Logout: send post_logout_redirect_uri together with id_token_hint (or client_id) and register the URI in 'Valid post logout redirect URIs'.",
-      "testability": {"observable_from_source_below": "26.0.0", "live_test": "legacy-logout"},
-      "review": {"approved_by": "poc-curator", "verified_against_official_docs": true}
+      "testability": {
+        "observable_from_source_below": "26.0.0",
+        "live_test": "legacy-logout"
+      },
+      "review": {
+        "approved_by": "poc-curator",
+        "verified_against_official_docs": true
+      },
+      "checks": [
+        {
+          "check_id": "logout_with_redirect_uri",
+          "data_source": "access_log",
+          "what_to_check": "Calls to the OIDC logout endpoint with the legacy redirect_uri parameter",
+          "how_to_check": "Filter access log records on /protocol/openid-connect/logout with a redirect_uri query parameter",
+          "impact_signal": "Any such request: it fails after the upgrade",
+          "scope": "client",
+          "evidence_quote": "Previous versions of Keycloak had supported automatic logout of the user and redirecting to the application by opening logout endpoint URL such as http(s)://example-host/auth/realms/my-realm-name/protocol/openid-connect/logout?redirect_uri=encodedRedirectUri.",
+          "detector": "http.endpoint.query_param",
+          "params": {
+            "endpoint": "oidc-logout",
+            "param": "redirect_uri"
+          }
+        },
+        {
+          "check_id": "legacy_logout_spi_options",
+          "data_source": "server_config",
+          "what_to_check": "Server options legacy-logout-redirect-uri and suppress-logout-confirmation-screen",
+          "how_to_check": "Search startup options, keycloak.conf and environment variables for --spi-login-protocol-openid-connect-legacy-logout-redirect-uri and --spi-login-protocol-openid-connect-suppress-logout-confirmation-screen",
+          "impact_signal": "Option set: the server relied on the removed behaviour (and the option is no longer recognised)",
+          "scope": "server",
+          "evidence_quote": "As part of this change the following related configuration options for the SPI have been removed:",
+          "detector": "none",
+          "params": {}
+        }
+      ]
     },
     {
       "bc_id": "KC-BC-003",
       "entry_id": "kc-26.4.3-breaking-accepting-only-normalized-paths-in-requests",
-      "detector": "http.path.non_normalized",
-      "params": {},
       "change_type": "breaking",
-      "impact_area": "http-endpoints",
       "severity": "high",
       "source_quote": "As this has led to a hard-to-configure URL filtering, for example, in reverse proxies, the normalization is now disabled, and Keycloak responds with an HTTP 400 response code.",
       "remediation": "Normalize request URLs in client libraries and reverse proxies (collapse '//' and resolve dot segments). The option http-accept-non-normalized-paths=true restores the old behaviour only temporarily: it is deprecated.",
-      "testability": {"observable_from_source_below": "26.4.3", "live_test": "non-normalized-path"},
-      "review": {"approved_by": "poc-curator", "verified_against_official_docs": true}
+      "testability": {
+        "observable_from_source_below": "26.4.3",
+        "live_test": "non-normalized-path"
+      },
+      "review": {
+        "approved_by": "poc-curator",
+        "verified_against_official_docs": true
+      },
+      "checks": [
+        {
+          "check_id": "non_normalized_request_paths",
+          "data_source": "access_log",
+          "what_to_check": "HTTP requests whose path contains '//' or dot segments",
+          "how_to_check": "Filter access log paths matching '//' or '/./' or '/../'",
+          "impact_signal": "Such requests get HTTP 400 after the upgrade",
+          "scope": "client",
+          "evidence_quote": "As this has led to a hard-to-configure URL filtering, for example, in reverse proxies, the normalization is now disabled, and Keycloak responds with an HTTP 400 response code.",
+          "detector": "http.path.non_normalized",
+          "params": {}
+        },
+        {
+          "check_id": "accept_non_normalized_paths_option",
+          "data_source": "server_config",
+          "what_to_check": "Option http-accept-non-normalized-paths",
+          "how_to_check": "Check startup options / keycloak.conf / environment for http-accept-non-normalized-paths=true",
+          "impact_signal": "Option enabled: the old behaviour is kept for now, but the option is deprecated",
+          "scope": "server",
+          "evidence_quote": "To revert to the previous behavior and to accept non-normalized URLs, set the option http-accept-non-normalized-paths to true.",
+          "detector": "none",
+          "params": {}
+        },
+        {
+          "check_id": "reject_non_normalized_path_filter_debug",
+          "data_source": "server_log",
+          "what_to_check": "Rejected requests logged by RejectNonNormalizedPathFilter",
+          "how_to_check": "After the upgrade, enable debug logging for org.keycloak.quarkus.runtime.services.RejectNonNormalizedPathFilter and look for its messages",
+          "impact_signal": "Messages from the filter identify rejected requests",
+          "scope": "server",
+          "evidence_quote": "To analyze rejected requests in the server log, enable debug logging for org.keycloak.quarkus.runtime.services.RejectNonNormalizedPathFilter.",
+          "detector": "none",
+          "params": {}
+        }
+      ]
     },
     {
       "bc_id": "KC-BC-004",
       "entry_id": "kc-23.0.0-uncategorized-changes-to-the-value-format-of-claims-mapped-by-the-realm-and-client-role-mappers",
-      "detector": "client.protocol_mapper.single_valued",
-      "params": {"mapper_types": ["oidc-usermodel-client-role-mapper", "oidc-usermodel-realm-role-mapper"]},
       "change_type": "breaking",
-      "impact_area": "protocol-token-mapping",
       "severity": "high",
       "source_quote": "In this release, the role and client mappers now map to a single value from the effective roles of a user when they are marked as single-valued (Multivalued disabled).",
       "remediation": "If consumers expect all roles, enable 'Multivalued' on the role mapper and read the claim as a JSON array; otherwise update consumers that parsed the former stringified JSON array, which now receive a single role value.",
-      "testability": {"observable_from_source_below": "23.0.0", "live_test": "role-mapper-multivalued"},
-      "review": {"approved_by": "poc-curator", "verified_against_official_docs": true}
+      "testability": {
+        "observable_from_source_below": "23.0.0",
+        "live_test": "role-mapper-multivalued"
+      },
+      "review": {
+        "approved_by": "poc-curator",
+        "verified_against_official_docs": true
+      },
+      "checks": [
+        {
+          "check_id": "single_valued_role_mappers",
+          "data_source": "realm_export",
+          "what_to_check": "Realm/client role protocol mappers with Multivalued disabled",
+          "how_to_check": "Inspect protocol mappers of type oidc-usermodel-realm-role-mapper / oidc-usermodel-client-role-mapper with multivalued=false",
+          "impact_signal": "The claim changes from a stringified JSON array to a single role value",
+          "scope": "client",
+          "evidence_quote": "In this release, the role and client mappers now map to a single value from the effective roles of a user when they are marked as single-valued (Multivalued disabled).",
+          "detector": "client.protocol_mapper.single_valued",
+          "params": {
+            "mapper_types": [
+              "oidc-usermodel-client-role-mapper",
+              "oidc-usermodel-realm-role-mapper"
+            ]
+          }
+        },
+        {
+          "check_id": "consumers_parsing_role_claim",
+          "data_source": "client_application",
+          "what_to_check": "Applications parsing the role claim of single-valued mappers",
+          "how_to_check": "Review the token parsing code of the flagged clients",
+          "impact_signal": "Code that expects a JSON array encoded as a string",
+          "scope": "client",
+          "evidence_quote": "Before this release, both realm (User Realm Role) and client (User Client Role) protocol mappers were mapping a stringfied JSON array when the Multivalued setting was disabled.",
+          "detector": "none",
+          "params": {}
+        }
+      ]
     }
   ],
   "controls": [
@@ -61,17 +188,39 @@
       "title": "Calls on monitored endpoints not attributable to a client",
       "category": "unattributed-calls",
       "severity": "info",
-      "detection": {
-        "runtime": {
-          "mode": "aggregate",
-          "condition": {"all": [
-            {"field": "client_identified", "op": "eq", "value": false},
-            {"field": "url.path", "op": "regex", "value": "^/realms/"}
-          ]}
-        }
-      },
       "remediation": "Enable MDC (log-mdc-enabled with the clientId key) and make clients send client_id explicitly, so that runtime evidence can be attributed to a Keycloak client.",
-      "testability": {"live_test": "anonymous-client"}
+      "testability": {
+        "live_test": "anonymous-client"
+      },
+      "checks": [
+        {
+          "check_id": "unattributed_calls",
+          "data_source": "access_log",
+          "what_to_check": "Calls on /realms/* without a client id",
+          "how_to_check": "Access log records with client_id = anonymous",
+          "impact_signal": "Traffic that cannot be attributed to a client",
+          "scope": "realm",
+          "detection": {
+            "runtime": {
+              "mode": "aggregate",
+              "condition": {
+                "all": [
+                  {
+                    "field": "client_identified",
+                    "op": "eq",
+                    "value": false
+                  },
+                  {
+                    "field": "url.path",
+                    "op": "regex",
+                    "value": "^/realms/"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
     }
   ]
 }

@@ -99,6 +99,7 @@ function FindingDetail({ finding, onClose }) {
         <StatusChip kind={SEVERITY_CLS[finding.severity]} icon={SEVERITY_ICON[finding.severity]} label={finding.severity} />
         <span>Confidenza: <b>{finding.confidence_label}</b> ({finding.confidence})</span>
         <span>Fonti: {finding.detection_sources.join(" + ")}</span>
+        {finding.checks_matched?.length > 0 && <span className="muted">verifiche: {finding.checks_matched.join(", ")}</span>}
         {!finding.client_identified && <span className="muted">client non identificato</span>}
       </div>
       {finding.inventory?.owner_team && (
@@ -265,6 +266,28 @@ export default function App() {
           </p>
         )}
       </section>
+
+      {s.checks_not_executed?.length > 0 && (
+        <section className="panel">
+          <h2>Verifiche non eseguite ({s.checks_not_executed.length})</h2>
+          <p className="muted small">
+            Fonti dati disponibili: {(s.data_sources_available || []).join(", ")} · eseguite {s.checks_executed} verifiche
+          </p>
+          <div className="table-wrap">
+            <table>
+              <thead><tr><th>BC</th><th>Fonte dati</th><th>Verifica</th><th>Motivo</th></tr></thead>
+              <tbody>
+                {s.checks_not_executed.map((c) => (
+                  <tr key={`${c.bc_id}-${c.check_id}`}>
+                    <td>{c.bc_id}</td><td>{c.data_source}</td>
+                    <td className="wrap">{c.what_to_check || c.check_id}</td><td className="muted">{c.reason}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
 
       <section className="panel">
         <div className="panel-head">

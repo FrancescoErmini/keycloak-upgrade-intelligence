@@ -18,6 +18,7 @@ from . import scoring
 from .rules import evaluate, matching_values, query_params
 
 MAX_EVIDENCE = 25
+DEFAULT_SOURCES = ("realm_export", "access_log", "event_log", "server_log")
 
 
 def redirect_matches(registered: str, value: str, root_url: str | None = None) -> bool:
@@ -77,7 +78,8 @@ def _suggest(rule: dict, value) -> dict:
 
 class Assessment:
     def __init__(self, store: Store, source_version: str, target_version: str,
-                 snapshot_id: str | None = None, log_origins: list[str] | None = None, label: str | None = None):
+                 snapshot_id: str | None = None, log_origins: list[str] | None = None, label: str | None = None,
+                 data_sources: list[str] | tuple[str, ...] | None = None):
         self.store = store
         self.source = source_version
         self.target = target_version
@@ -87,7 +89,13 @@ class Assessment:
         self.snapshot_id = snap["snapshot_id"]
         self.log_origins = sorted(log_origins) if log_origins else None
         self.label = label
-        self.assessment_id = "asmt-" + stable_id(self.source, self.target, self.snapshot_id, self.log_origins, label, length=16)
+        if data_sources is None:
+            from ..config import get_settings
+            data_sources = get_settings().available_data_sources
+        self.data_sources = sorted(set(data_sources))
+        ds_key = None if self.data_sources == sorted(DEFAULT_SOURCES) else self.data_sources
+        self.assessment_id = "asmt-" + stable_id(self.source, self.target, self.snapshot_id, self.log_origins, label,
+                                                 *([ds_key] if ds_key else []), length=16)
         self.now = datetime.now(timezone.utc).isoformat()
 
     def run(self) -> dict:
@@ -108,15 +116,36 @@ class Assessment:
                                 "reason": f"not in ({self.source}, {self.target}]"})
 
         findings: list[dict] = []
+        self.not_executed: list[dict] = []
+        self.executed = 0
+        logs_available = bool({"access_log", "event_log"} & set(self.data_sources))
         for rule in applicable:
-            det = rule["detection"]
-            static, runtime = det.get("static"), det.get("runtime")
-            if static:
-                findings.extend(self._static(rule, static, runtime, clients, logs_by_client))
-            if runtime and runtime["mode"] == "detect":
-                findings.extend(self._runtime_detect(rule, runtime, logs, clients, by_id))
-            if runtime and runtime["mode"] == "aggregate":
-                findings.extend(self._aggregate(rule, runtime, logs))
+            partial: list[dict] = []
+            for check in rule.get("checks") or []:
+                det = check.get("detection")
+                ref = {"bc_id": rule["bc_id"], "check_id": check["check_id"], "data_source": check["data_source"]}
+                if not det:
+                    self.not_executed.append({**ref, "reason": "manual check: no automated detector",
+                                              "what_to_check": check.get("what_to_check")})
+                    continue
+                if check["data_source"] not in self.data_sources:
+                    self.not_executed.append({**ref, "reason": f"data source '{check['data_source']}' not available",
+                                              "what_to_check": check.get("what_to_check")})
+                    continue
+                self.executed += 1
+                static, runtime = det.get("static"), det.get("runtime")
+                found: list[dict] = []
+                if static:
+                    corroborate = runtime if (runtime and runtime["mode"] == "corroborate" and logs_available) else None
+                    found += self._static(rule, static, corroborate, clients, logs_by_client)
+                if runtime and runtime["mode"] == "detect":
+                    found += self._runtime_detect(rule, runtime, logs, clients, by_id)
+                if runtime and runtime["mode"] == "aggregate":
+                    found += self._aggregate(rule, runtime, logs)
+                for f in found:
+                    f["checks_matched"] = [check["check_id"]]
+                partial += found
+            findings.extend(self._merge(partial))
 
         findings.sort(key=lambda f: (-f["risk_score"], f["bc_id"], f["client_id"]))
         summary = self._summary(findings, clients, logs, applicable, skipped)
@@ -125,6 +154,26 @@ class Assessment:
         return summary
 
     # ------------------------------------------------------------------------------------
+    @staticmethod
+    def _merge(partial: list[dict]) -> list[dict]:
+        """Several checks of one BC can hit the same client: one finding, evidence of all checks."""
+        rank = {"explicit": 2, "inferred-redirect-uri": 1, "none": 0}
+        merged: dict[str, dict] = {}
+        for f in partial:
+            m = merged.get(f["finding_id"])
+            if m is None:
+                merged[f["finding_id"]] = f
+                continue
+            m["evidence"] = (m["evidence"] + f["evidence"])[:MAX_EVIDENCE]
+            m["evidence_count"] += f["evidence_count"]
+            m["detection_sources"] = sorted(set(m["detection_sources"]) | set(f["detection_sources"]))
+            m["checks_matched"] = sorted(set(m["checks_matched"]) | set(f["checks_matched"]))
+            if rank[f["attribution"]] > rank[m["attribution"]]:
+                m["attribution"] = f["attribution"]
+            if f["confidence"] > m["confidence"]:
+                m.update(confidence=f["confidence"], confidence_label=f["confidence_label"], risk_score=f["risk_score"])
+        return list(merged.values())
+
     def _finding(self, rule: dict, client_id: str, client: dict | None, *, sources: list[str], evidence: list[dict],
                  evidence_count: int, conf: float, attribution: str, identified: bool) -> dict:
         inv = (client or {}).get("inventory") or {}
@@ -234,7 +283,7 @@ class Assessment:
             "source_version": self.source,
             "target_version": self.target,
             "status": scoring.readiness(findings),
-            "parameters": {"log_origins": self.log_origins, "label": self.label},
+            "parameters": {"log_origins": self.log_origins, "label": self.label, "data_sources": self.data_sources},
             "summary": {
                 "clients_assessed": len(clients),
                 "impacted_clients": len(impacted),
@@ -249,6 +298,10 @@ class Assessment:
                 "by_confidence": dict(Counter(f["confidence_label"] for f in bc)),
                 "by_bc": dict(Counter(f["bc_id"] for f in bc)),
                 "applicable_rules": [r["bc_id"] for r in applicable],
+                "data_sources_available": self.data_sources,
+                "checks_executed": self.executed,
+                "checks_not_executed": self.not_executed,
+                "checks_not_executed_by_source": dict(Counter(c["data_source"] for c in self.not_executed)),
                 "skipped_rules": skipped,
             },
             "created_at": self.now,

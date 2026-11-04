@@ -1,35 +1,98 @@
 {
-  "settings": {"number_of_shards": 1, "number_of_replicas": 0},
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 0
+  },
   "mappings": {
     "dynamic": "strict",
     "properties": {
-      "doc_type": {"type": "keyword"},
-      "finding_id": {"type": "keyword"},
-      "assessment_id": {"type": "keyword"},
-      "snapshot_id": {"type": "keyword"},
-      "source_version": {"type": "keyword"},
-      "target_version": {"type": "keyword"},
-      "bc_id": {"type": "keyword"},
-      "bc_title": {"type": "keyword"},
-      "kind": {"type": "keyword"},
-      "category": {"type": "keyword"},
-      "category_label": {"type": "keyword"},
-      "client_id": {"type": "keyword"},
-      "client_identified": {"type": "boolean"},
-      "attribution": {"type": "keyword"},
-      "severity": {"type": "keyword"},
-      "confidence": {"type": "float"},
-      "confidence_label": {"type": "keyword"},
-      "risk_score": {"type": "float"},
-      "detection_sources": {"type": "keyword"},
-      "evidence": {"type": "object", "enabled": false},
-      "evidence_count": {"type": "integer"},
-      "remediation": {"type": "text"},
-      "inventory": {"type": "flattened"},
-      "summary": {"type": "object", "enabled": false},
-      "status": {"type": "keyword"},
-      "parameters": {"type": "object", "enabled": false},
-      "created_at": {"type": "date"}
+      "doc_type": {
+        "type": "keyword"
+      },
+      "finding_id": {
+        "type": "keyword"
+      },
+      "assessment_id": {
+        "type": "keyword"
+      },
+      "snapshot_id": {
+        "type": "keyword"
+      },
+      "source_version": {
+        "type": "keyword"
+      },
+      "target_version": {
+        "type": "keyword"
+      },
+      "bc_id": {
+        "type": "keyword"
+      },
+      "bc_title": {
+        "type": "keyword"
+      },
+      "kind": {
+        "type": "keyword"
+      },
+      "category": {
+        "type": "keyword"
+      },
+      "category_label": {
+        "type": "keyword"
+      },
+      "client_id": {
+        "type": "keyword"
+      },
+      "client_identified": {
+        "type": "boolean"
+      },
+      "attribution": {
+        "type": "keyword"
+      },
+      "severity": {
+        "type": "keyword"
+      },
+      "confidence": {
+        "type": "float"
+      },
+      "confidence_label": {
+        "type": "keyword"
+      },
+      "risk_score": {
+        "type": "float"
+      },
+      "detection_sources": {
+        "type": "keyword"
+      },
+      "evidence": {
+        "type": "object",
+        "enabled": false
+      },
+      "evidence_count": {
+        "type": "integer"
+      },
+      "remediation": {
+        "type": "text"
+      },
+      "inventory": {
+        "type": "flattened"
+      },
+      "summary": {
+        "type": "object",
+        "enabled": false
+      },
+      "status": {
+        "type": "keyword"
+      },
+      "parameters": {
+        "type": "object",
+        "enabled": false
+      },
+      "created_at": {
+        "type": "date"
+      },
+      "checks_matched": {
+        "type": "keyword"
+      }
     }
   }
 }

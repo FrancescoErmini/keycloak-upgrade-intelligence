@@ -172,6 +172,7 @@ services:
       OLLAMA_URL: ${OLLAMA_URL:-http://ollama:11434}
       OLLAMA_MODEL: ${OLLAMA_MODEL:-llama3.1:8b}
       AUTO_BOOTSTRAP: ${AUTO_BOOTSTRAP:-true}
+      AVAILABLE_DATA_SOURCES: ${AVAILABLE_DATA_SOURCES:-realm_export,access_log,event_log,server_log}
     ports: ["8000:8000"]
     volumes:
       - ./data:/srv/data:ro
